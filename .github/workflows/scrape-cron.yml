@@ -1,0 +1,16 @@
+name: Daily Grant Scrape
+on:
+  schedule:
+    - cron: '0 2 * * *'    # Runs daily at 2 AM UTC
+  workflow_dispatch:         # Manual trigger from GitHub UI
+
+jobs:
+  trigger-scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Python Engine Scrape
+        run: |
+          curl -X POST "${{ secrets.PYTHON_ENGINE_URL }}/scrape/trigger" \
+            -H "X-Webhook-Secret: ${{ secrets.GITHUB_ACTIONS_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --fail
