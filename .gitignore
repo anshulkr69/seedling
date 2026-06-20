@@ -43,3 +43,7 @@ Thumbs.db
 
 # ───── Supabase ─────
 supabase/.temp/
+
+
+
+WebDocs/*.md
