@@ -13,4 +13,6 @@ jobs:
           curl -X POST "${{ secrets.PYTHON_ENGINE_URL }}/scrape/trigger" \
             -H "X-Webhook-Secret: ${{ secrets.GITHUB_ACTIONS_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
-            --fail
+            --fail \
+            --retry 3 \
+            --retry-delay 5
