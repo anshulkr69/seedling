@@ -1,7 +1,7 @@
 import asyncio
 import sys
 import logging
-from scrapers.runner import ScrapeRunner
+from scraping.runner import ScrapeRunner
 
 # Configure logging to standard output
 logging.basicConfig(

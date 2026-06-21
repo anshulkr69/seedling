@@ -1,18 +1,18 @@
 from datetime import datetime, timedelta
 from typing import List
-from scrapers.base import BaseScraper
-from scrapers.sources.seed_data import FUNDER_TEMPLATES
+from scraping.base import BaseScraper
+from scraping.sources.seed_data import FUNDER_TEMPLATES
 from models.grant import ScrapedGrant
 
-class DSTScraper(BaseScraper):
+class UNDPScraper(BaseScraper):
     def __init__(self):
-        super().__init__("DST", "https://dst.gov.in/call-for-proposals")
+        super().__init__("UNDP", "https://www.undp.org/india/procurement")
 
     async def scrape(self) -> List[ScrapedGrant]:
         grants = []
-        for i, template in enumerate(FUNDER_TEMPLATES["DST"]):
+        for i, template in enumerate(FUNDER_TEMPLATES["UNDP"]):
             data = template.copy()
             # Stagger deadlines dynamically
-            data["deadline"] = datetime.now() + timedelta(days=30 + i * 15)
+            data["deadline"] = datetime.now() + timedelta(days=50 + i * 25)
             grants.append(ScrapedGrant(**data))
         return grants

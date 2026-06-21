@@ -1,5 +1,5 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, status
-from scrapers.runner import ScrapeRunner
+from scraping.runner import ScrapeRunner
 from utils.security import verify_internal_key
 import logging
 

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import List
-from scrapers.base import BaseScraper
-from scrapers.sources.seed_data import FUNDER_TEMPLATES
+from scraping.base import BaseScraper
+from scraping.sources.seed_data import FUNDER_TEMPLATES
 from models.grant import ScrapedGrant
 
 class InfosysCSRScraper(BaseScraper):
