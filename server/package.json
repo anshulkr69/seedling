@@ -2,12 +2,15 @@
   "name": "seedling-server",
   "version": "1.0.0",
   "description": "Seedling Backend API",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
-    "start": "node --env-file=.env dist/index.js",
+    "start": "node dist/index.js",
     "type-check": "tsc --noEmit"
   },
   "keywords": [],
