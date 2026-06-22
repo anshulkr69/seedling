@@ -1,7 +1,7 @@
 import asyncio
 import sys
 import logging
-from scraping.manager import ScrapeManager
+from scraping.runner import ScrapeRunner
 
 # Configure logging to standard output
 logging.basicConfig(
@@ -13,7 +13,7 @@ logging.basicConfig(
 async def test_scraper():
     print("Running Seedling Web Ingestion & Scraping Pipeline Test...\n")
     try:
-        manager = ScrapeManager()
+        manager = ScrapeRunner()
         result = await manager.run()
         print("\nScraping Completed Successfully!")
         print("---------------------------------------")
