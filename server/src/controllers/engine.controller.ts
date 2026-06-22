@@ -8,7 +8,7 @@ const engineClient = axios.create({
   timeout: 120_000, // 2 min — matching/drafting can be slow
   headers: {
     'Content-Type': 'application/json',
-    'X-Webhook-Secret': env.GITHUB_ACTIONS_WEBHOOK_SECRET,
+    'X-Internal-Key': env.GITHUB_ACTIONS_WEBHOOK_SECRET,
   },
 });
 
