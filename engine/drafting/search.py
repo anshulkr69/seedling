@@ -11,7 +11,7 @@ class RAGSearch:
         self,
         org_id: str,
         persist_dir: str = "faiss_store",
-        embedding_model: str = "all-MiniLM-L6-v2",
+        embedding_model: str = "text-embedding-004",
         chunk_size: int = 1000,
         chunk_overlap: int = 200
     ):
