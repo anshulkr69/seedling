@@ -9,7 +9,7 @@ from config.settings import settings
 logger = logging.getLogger("drafting.embedding")
 
 class EmbeddingPipeline:
-    def __init__(self, model_name: str = "text-embedding-004", chunk_size: int = 1000, chunk_overlap: int = 200):
+    def __init__(self, model_name: str = "gemini-embedding-001", chunk_size: int = 1000, chunk_overlap: int = 200):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.model_name = model_name

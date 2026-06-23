@@ -91,8 +91,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, type }
     if (!isEmailVerified) {
       return <Navigate to="/verify-email" replace />
     }
-    // If onboarding already complete -> /dashboard
-    if (onboardingStep >= 5) {
+    // If onboarding already complete -> /dashboard (except for /complete screen)
+    if (onboardingStep >= 5 && !location.pathname.endsWith('/complete')) {
       return <Navigate to="/dashboard" replace />
     }
 

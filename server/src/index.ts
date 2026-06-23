@@ -7,7 +7,22 @@ const app = express();
 
 // ── Middleware ──────────────────────────────────────────
 app.use(helmet());
-app.use(cors({ origin: env.CLIENT_URL }));
+
+// Split CLIENT_URL by commas to allow multiple origins (e.g. local dev + production)
+const allowedOrigins = env.CLIENT_URL.split(',').map(url => url.trim());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Allow server-to-server or curl requests
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS Blocked] Request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 
 // ── Health check ────────────────────────────────────────
