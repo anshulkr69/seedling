@@ -13,7 +13,7 @@ class FaissVectorStore:
         self,
         org_id: str,
         persist_dir: str = "faiss_store",
-        embedding_model: str = "all-MiniLM-L6-v2",
+        embedding_model: str = "text-embedding-004",
         chunk_size: int = 1000,
         chunk_overlap: int = 200
     ):
@@ -146,5 +146,5 @@ class FaissVectorStore:
         """
         logger.info(f"Querying vector store for: '{query_text}'")
         # Generate embedding for the query
-        query_emb = self.embedding_pipeline.model.encode([query_text], show_progress_bar=False)
+        query_emb = self.embedding_pipeline.embed_query(query_text)
         return self.search(query_emb, top_k=top_k)
