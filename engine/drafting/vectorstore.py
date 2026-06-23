@@ -13,7 +13,7 @@ class FaissVectorStore:
         self,
         org_id: str,
         persist_dir: str = "faiss_store",
-        embedding_model: str = "text-embedding-004",
+        embedding_model: str = "gemini-embedding-001",
         chunk_size: int = 1000,
         chunk_overlap: int = 200
     ):

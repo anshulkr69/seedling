@@ -37,7 +37,7 @@ def generate_cache_key(org_id: str, grant_id: str) -> str:
     combined = f"{org_id}:{grant_id}"
     return hashlib.sha256(combined.encode()).hexdigest()
 
-def parse_sections(draft_text: str) -> Tuple[Dict[str, str], bool]:
+def parse_sections(draft_text: str) -> Tuple[Dict[str, str], bool, str]:
     """
     Parses the generated markdown draft to verify the 6 required headers are present.
     Splits the content into respective sections.

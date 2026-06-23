@@ -159,6 +159,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const confirmEmailMock = () => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        email_confirmed_at: new Date().toISOString(),
+        confirmed_at: new Date().toISOString()
+      }
+      setUser(updatedUser)
+      return true
+    }
     return false
   }
 
