@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
 <<<<<<< HEAD
-    "type-check": "tsc --noEmit"
+ 
 =======
     "type-check": "tsc -b --noEmit"
 >>>>>>> develop
