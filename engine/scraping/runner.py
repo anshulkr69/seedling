@@ -7,17 +7,18 @@ from scraping.sources import ALL_SCRAPERS
 from scraping.parser import HeuristicParser
 from models.grant import ScrapedGrant
 
-logger = logging.getLogger("scraper_manager")
+logger = logging.getLogger("scraper_runner")
 
-class ScrapeManager:
+class ScrapeRunner:
     @staticmethod
-    def serialize_grant(grant: ScrapedGrant) -> Dict[str, Any]:
+    def serialize_grant(grant: ScrapedGrant, scrape_time: datetime) -> Dict[str, Any]:
         """Converts a ScrapedGrant Pydantic model to a database-friendly dictionary."""
         d = grant.model_dump()
         # Serialize datetime to ISO format string for PostgreSQL timestamptz compatibility
         if d.get("deadline"):
             if isinstance(d["deadline"], datetime):
                 d["deadline"] = d["deadline"].isoformat()
+        d["last_scraped_at"] = scrape_time.isoformat()
         return d
 
     async def run(self) -> Dict[str, Any]:
@@ -47,15 +48,35 @@ class ScrapeManager:
         enriched_grants = [HeuristicParser.enrich_grant(g) for g in all_grants]
         
         # 3. Upsert to Supabase
-        db_records = [self.serialize_grant(g) for g in enriched_grants]
+        db_records = [self.serialize_grant(g, start_time) for g in enriched_grants]
         
         upserted_count = 0
         if db_records:
             try:
-                # Supabase Python client upsert on UNIQUE constraint funder, title, deadline
+                # Fetch all existing grants to prevent duplicates
+                existing_response = supabase.table("grants").select("id, funder, title").execute()
+                existing_map = {}
+                if existing_response.data:
+                    for g in existing_response.data:
+                        if g.get("funder") and g.get("title"):
+                            key = (g["funder"].strip().lower(), g["title"].strip().lower())
+                            existing_map[key] = g["id"]
+
+                # If the grant is already in the database, assign its ID so Supabase updates it
+                # Otherwise, generate a new UUID so all records have the "id" key (preventing PostgREST null key issues)
+                import uuid
+                for rec in db_records:
+                    if rec.get("funder") and rec.get("title"):
+                        key = (rec["funder"].strip().lower(), rec["title"].strip().lower())
+                        if key in existing_map:
+                            rec["id"] = existing_map[key]
+                        else:
+                            rec["id"] = str(uuid.uuid4())
+
+                # Perform upsert on conflict of ID (primary key)
                 response = supabase.table("grants").upsert(
                     db_records,
-                    on_conflict="funder,title,deadline"
+                    on_conflict="id"
                 ).execute()
                 upserted_count = len(response.data) if response.data else len(db_records)
                 logger.info(f"Successfully upserted {upserted_count} grants to database.")
@@ -64,26 +85,28 @@ class ScrapeManager:
                 raise e
         
         # 4. Perform Soft Deletes for stale grants
-        # Define 'stale' as any grant where is_active = true but the deadline is now in the past
+        # Define 'stale' as any grant where is_active = true and last_scraped_at is older than 2 days
         soft_deleted_count = 0
         try:
-            now_iso = datetime.now(timezone.utc).isoformat()
-            # Fetch active grants with past deadlines
-            past_grants_response = supabase.table("grants")\
+            from datetime import timedelta
+            stale_cutoff = (start_time - timedelta(days=2)).isoformat()
+            
+            # Fetch active grants that haven't been scraped in the last 2 days
+            stale_grants_response = supabase.table("grants")\
                 .select("id")\
                 .eq("is_active", True)\
-                .lt("deadline", now_iso)\
+                .lt("last_scraped_at", stale_cutoff)\
                 .execute()
                 
-            if past_grants_response.data:
-                past_grant_ids = [item["id"] for item in past_grants_response.data]
+            if stale_grants_response.data:
+                stale_grant_ids = [item["id"] for item in stale_grants_response.data]
                 # Mark them as inactive
                 update_response = supabase.table("grants")\
                     .update({"is_active": False})\
-                    .in_("id", past_grant_ids)\
+                    .in_("id", stale_grant_ids)\
                     .execute()
-                soft_deleted_count = len(update_response.data) if update_response.data else len(past_grant_ids)
-                logger.info(f"Soft-deleted {soft_deleted_count} stale grants (passed deadlines).")
+                soft_deleted_count = len(update_response.data) if update_response.data else len(stale_grant_ids)
+                logger.info(f"Soft-deleted {soft_deleted_count} stale grants (not scraped in last 2 days).")
         except Exception as e:
             logger.error(f"Error performing soft-deletes: {str(e)}")
             # Do not throw to let the run report success for upserts

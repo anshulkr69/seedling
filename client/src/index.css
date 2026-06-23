@@ -9,37 +9,29 @@
 
 @theme {
   /* Brand — Moss Green */
-  --color-moss:            #2D5016;
-  --color-moss-hover:      #1E3810;
-  --color-moss-dark:       #4A7C25;
-  --color-moss-dark-hover: #5B9330;
-  --color-moss-tint:       #F4F7F0;
-  --color-moss-accent:     #EAF2E0;
+  --color-moss: #2D5016;
+  --color-moss-hover: #1E3810;
+  --color-moss-dark:       #5B9330;
+  --color-moss-dark-hover: #6EA844;
+  --color-moss-tint: #F4F7F0;
+  --color-moss-accent: #EAF2E0;
 
   /* Status */
   --color-amber-tint:      #FEF3E2;
   --color-amber-text:      #9A5B00;
 
   /* Fonts */
-  --font-satoshi:          'Satoshi', sans-serif;
-  --font-sans:             'General Sans', sans-serif;
-
-  /* Custom Animations */
-  --animate-fadeIn:        fadeIn 0.2s ease-out;
-  --animate-scaleIn:       scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes scaleIn {
-    from { transform: scale(0.96); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
+  --font-satoshi:      'Satoshi', sans-serif;
+  --font-sans:         'General Sans', sans-serif;
 }
 
 @layer base {
-  *, *::before, *::after { box-sizing: border-box; }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
   html {
     font-family: var(--font-sans);
@@ -54,5 +46,7 @@
   }
 
   /* Tabular numbers for all data/stat displays */
-  .tabular { font-variant-numeric: tabular-nums; }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
 }

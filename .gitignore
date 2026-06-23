@@ -43,4 +43,8 @@ Thumbs.db
 
 # ───── Supabase ─────
 supabase/.temp/
-webDocs/*
+
+
+
+WebDocs/*.md
+RAG-Tutorials-main/

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import List
-from scraping.sources.base import BaseScraper
+from scraping.base import BaseScraper
 from scraping.sources.seed_data import FUNDER_TEMPLATES
 from models.grant import ScrapedGrant
 
