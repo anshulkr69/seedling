@@ -8,11 +8,22 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+<<<<<<< HEAD
     "type-check": "tsc --noEmit"
+=======
+    "type-check": "tsc -b --noEmit"
+>>>>>>> develop
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "@tanstack/react-query": "^5.101.0",
+    "date-fns": "^4.4.0",
+    "lucide-react": "^1.20.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-hook-form": "^7.79.0",
+    "react-router-dom": "^7.18.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

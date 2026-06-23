@@ -1,7 +1,11 @@
-name: Daily Grant Scrape
+name: Scheduled Grant Scrape
 on:
   schedule:
+<<<<<<< HEAD
         # Runs daily at 2 AM UTC
+=======
+    - cron: '0 2 * * 1,4'    # Runs twice a week (Monday and Thursday) at 2 AM UTC
+>>>>>>> develop
   workflow_dispatch:         # Manual trigger from GitHub UI
 
 jobs:

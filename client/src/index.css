@@ -1,3 +1,4 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&f[]=general-sans@400,500,600,700&display=swap');
 @import "tailwindcss";
 
 /* ── Seedling Design Tokens ─────────────────────────────────────────────
@@ -16,12 +17,25 @@
   --color-moss-accent:     #EAF2E0;
 
   /* Status */
-  --color-amber-tint:  #FEF3E2;
-  --color-amber-text:  #9A5B00;
+  --color-amber-tint:      #FEF3E2;
+  --color-amber-text:      #9A5B00;
 
   /* Fonts */
-  --font-satoshi:      'Satoshi', sans-serif;
-  --font-sans:         'General Sans', sans-serif;
+  --font-satoshi:          'Satoshi', sans-serif;
+  --font-sans:             'General Sans', sans-serif;
+
+  /* Custom Animations */
+  --animate-fadeIn:        fadeIn 0.2s ease-out;
+  --animate-scaleIn:       scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { transform: scale(0.96); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
 }
 
 @layer base {
@@ -31,6 +45,12 @@
     font-family: var(--font-sans);
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  /* Support clean focus highlights in dark mode */
+  input:focus, textarea:focus, select:focus {
+    --tw-ring-color: var(--color-moss);
   }
 
   /* Tabular numbers for all data/stat displays */
