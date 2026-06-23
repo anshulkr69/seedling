@@ -1,10 +1,15 @@
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from typing import Optional
 
+# Dynamically locate the .env file relative to this settings.py location
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_env_path = os.path.join(_current_dir, "..", ".env")
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=_env_path,
         env_file_encoding="utf-8",
         extra="ignore"
     )
