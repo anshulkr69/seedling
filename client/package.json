@@ -8,11 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-<<<<<<< HEAD
- 
-=======
+
+    
     "type-check": "tsc -b --noEmit"
->>>>>>> develop
+
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
