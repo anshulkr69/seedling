@@ -53,10 +53,30 @@ class ScrapeRunner:
         upserted_count = 0
         if db_records:
             try:
-                # Supabase Python client upsert on UNIQUE constraint funder, title, deadline
+                # Fetch all existing grants to prevent duplicates
+                existing_response = supabase.table("grants").select("id, funder, title").execute()
+                existing_map = {}
+                if existing_response.data:
+                    for g in existing_response.data:
+                        if g.get("funder") and g.get("title"):
+                            key = (g["funder"].strip().lower(), g["title"].strip().lower())
+                            existing_map[key] = g["id"]
+
+                # If the grant is already in the database, assign its ID so Supabase updates it
+                # Otherwise, generate a new UUID so all records have the "id" key (preventing PostgREST null key issues)
+                import uuid
+                for rec in db_records:
+                    if rec.get("funder") and rec.get("title"):
+                        key = (rec["funder"].strip().lower(), rec["title"].strip().lower())
+                        if key in existing_map:
+                            rec["id"] = existing_map[key]
+                        else:
+                            rec["id"] = str(uuid.uuid4())
+
+                # Perform upsert on conflict of ID (primary key)
                 response = supabase.table("grants").upsert(
                     db_records,
-                    on_conflict="funder,title,deadline"
+                    on_conflict="id"
                 ).execute()
                 upserted_count = len(response.data) if response.data else len(db_records)
                 logger.info(f"Successfully upserted {upserted_count} grants to database.")

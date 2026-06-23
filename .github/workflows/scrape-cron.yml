@@ -11,7 +11,7 @@ jobs:
       - name: Trigger Python Engine Scrape
         run: |
           curl -X POST "${{ secrets.PYTHON_ENGINE_URL }}/scrape/trigger" \
-            -H "X-Webhook-Secret: ${{ secrets.GITHUB_ACTIONS_WEBHOOK_SECRET }}" \
+            -H "X-Internal-Key: ${{ secrets.GITHUB_ACTIONS_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
             --fail \
             --retry 3 \
