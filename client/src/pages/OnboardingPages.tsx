@@ -310,7 +310,7 @@ export const OnboardingStep3: React.FC = () => {
   // Custom states for Controller (Toggles/Steppers)
   const [teamSize, setTeamSize] = useState(profile?.team_size || 5)
   const [audited, setAudited] = useState(profile?.has_audited_financials || false)
-  const [has12A80G, setHas12A80G] = useState(profile?.has_12A_80G || false)
+  const [has12A80G, setHas12A80G] = useState(profile?.has_12a_80g || false)
   const [hasFCRA, setHasFCRA] = useState(profile?.has_fcra || false)
 
   const { register, handleSubmit } = useForm({
@@ -329,7 +329,7 @@ export const OnboardingStep3: React.FC = () => {
         team_size: teamSize,
         has_audited_financials: audited,
         annual_turnover_range: data.annual_turnover_range,
-        has_12A_80G: has12A80G,
+        has_12a_80g: has12A80G,
         has_fcra: hasFCRA,
         ngo_darpan_id: data.ngo_darpan_id || undefined,
         csr_1_registration: data.csr_1_registration || undefined,

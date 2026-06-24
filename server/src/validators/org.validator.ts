@@ -32,7 +32,7 @@ export const updateOrgSchema = z.object({
   team_size: z.number().int().positive().optional(),
   has_audited_financials: z.boolean().optional(),
   annual_turnover_range: z.enum(['<10L', '10L-50L', '50L-1Cr', '>1Cr']).optional(),
-  has_12A_80G: z.boolean().optional(),
+  has_12a_80g: z.boolean().optional(),
   has_fcra: z.boolean().optional(),
   ngo_darpan_id: z.string().optional(),
   csr_1_registration: z.string().optional(),
