@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { supabaseAdmin } from '../config/supabase.js';
+import { createUserClient } from '../config/supabase.js';
 import type { AuthenticatedRequest } from '../types/index.js';
 import { createProjectSchema, updateProjectSchema } from '../validators/project.validator.js';
 
@@ -15,7 +15,8 @@ export async function createProject(req: AuthenticatedRequest, res: Response): P
       return;
     }
 
-    const { data, error } = await supabaseAdmin
+    const userClient = createUserClient(req.user.accessToken);
+    const { data, error } = await userClient
       .from('projects')
       .insert({
         org_id: req.user.orgId,
@@ -25,15 +26,20 @@ export async function createProject(req: AuthenticatedRequest, res: Response): P
       .single();
 
     if (error) {
-      console.error('Error creating project:', error.message);
-      res.status(500).json({ error: 'Failed to create project' });
+      console.error('Error creating project:', error.message, error.details, error.hint);
+      res.status(500).json({ 
+        error: 'Failed to create project', 
+        details: error.message,
+        hint: error.hint,
+        code: error.code
+      });
       return;
     }
 
     res.status(201).json({ data });
-  } catch (err) {
+  } catch (err: any) {
     console.error('createProject error:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', details: err?.message });
   }
 }
 
@@ -48,8 +54,10 @@ export async function getProjects(req: AuthenticatedRequest, res: Response): Pro
     const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 10));
     const offset = (page - 1) * limit;
 
+    const userClient = createUserClient(req.user.accessToken);
+
     // Get total count
-    const { count, error: countError } = await supabaseAdmin
+    const { count, error: countError } = await userClient
       .from('projects')
       .select('*', { count: 'exact', head: true })
       .eq('org_id', req.user.orgId!);
@@ -61,7 +69,7 @@ export async function getProjects(req: AuthenticatedRequest, res: Response): Pro
     }
 
     // Get paginated data
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await userClient
       .from('projects')
       .select('*')
       .eq('org_id', req.user.orgId!)
@@ -95,7 +103,8 @@ export async function getProjects(req: AuthenticatedRequest, res: Response): Pro
  */
 export async function getProjectById(req: AuthenticatedRequest, res: Response): Promise<void> {
   try {
-    const { data, error } = await supabaseAdmin
+    const userClient = createUserClient(req.user.accessToken);
+    const { data, error } = await userClient
       .from('projects')
       .select('*')
       .eq('id', req.params.id!)
@@ -133,7 +142,8 @@ export async function updateProject(req: AuthenticatedRequest, res: Response): P
       return;
     }
 
-    const { data, error } = await supabaseAdmin
+    const userClient = createUserClient(req.user.accessToken);
+    const { data, error } = await userClient
       .from('projects')
       .update({
         ...parsed.data,
@@ -168,8 +178,10 @@ export async function updateProject(req: AuthenticatedRequest, res: Response): P
  */
 export async function deleteProject(req: AuthenticatedRequest, res: Response): Promise<void> {
   try {
+    const userClient = createUserClient(req.user.accessToken);
+    
     // First check if the project exists and belongs to the org
-    const { data: existing } = await supabaseAdmin
+    const { data: existing } = await userClient
       .from('projects')
       .select('id')
       .eq('id', req.params.id!)
@@ -181,7 +193,7 @@ export async function deleteProject(req: AuthenticatedRequest, res: Response): P
       return;
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await userClient
       .from('projects')
       .delete()
       .eq('id', req.params.id!)

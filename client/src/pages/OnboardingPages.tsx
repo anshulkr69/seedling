@@ -112,7 +112,7 @@ export const OnboardingStep1: React.FC = () => {
             type="number"
             placeholder="e.g. 2018"
             error={errors.year_founded?.message}
-            {...register('year_founded', { 
+            {...register('year_founded', {
               required: 'Year is required',
               min: { value: 1900, message: 'Year must be after 1900' },
               max: { value: new Date().getFullYear(), message: 'Cannot be in the future' }
@@ -167,7 +167,7 @@ export const OnboardingStep2: React.FC = () => {
   const missionText = watch('mission_statement', '')
 
   const toggleCause = (cause: string) => {
-    setSelectedCauses(prev => 
+    setSelectedCauses(prev =>
       prev.includes(cause) ? prev.filter(c => c !== cause) : [...prev, cause]
     )
   }
@@ -221,7 +221,7 @@ export const OnboardingStep2: React.FC = () => {
             rows={3}
             maxLength={300}
             error={errors.mission_statement?.message}
-            {...register('mission_statement', { 
+            {...register('mission_statement', {
               required: 'Mission statement is required',
               maxLength: { value: 300, message: 'Max 300 characters' }
             })}
@@ -244,11 +244,10 @@ export const OnboardingStep2: React.FC = () => {
                   type="button"
                   key={cause}
                   onClick={() => toggleCause(cause)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-sans font-medium border transition-all cursor-pointer ${
-                    isSelected 
-                      ? 'bg-moss border-moss text-white dark:bg-moss-dark dark:border-moss-dark' 
-                      : 'border-zinc-200 text-zinc-500 bg-white dark:border-zinc-700 dark:text-zinc-400 dark:bg-zinc-800 hover:border-zinc-405'
-                  }`}
+                  className={`px-3 py-1.5 rounded-full text-xs font-sans font-medium border transition-all cursor-pointer ${isSelected
+                    ? 'bg-moss border-moss text-white dark:bg-moss-dark dark:border-moss-dark'
+                    : 'border-zinc-200 text-zinc-500 bg-white dark:border-zinc-700 dark:text-zinc-400 dark:bg-zinc-800 hover:border-zinc-405'
+                    }`}
                 >
                   {cause}
                 </button>
@@ -265,8 +264,8 @@ export const OnboardingStep2: React.FC = () => {
             </span>
             <div className="grid grid-cols-2 gap-2">
               {['Local', 'State', 'National', 'International'].map((geo) => (
-                <label 
-                  key={geo} 
+                <label
+                  key={geo}
                   className={`flex items-center space-x-2 border border-zinc-200 dark:border-zinc-700 rounded-[6px] p-2.5 bg-white dark:bg-zinc-800 cursor-pointer text-xs font-sans font-medium text-zinc-700 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors`}
                 >
                   <input
@@ -306,7 +305,7 @@ export const OnboardingStep3: React.FC = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Custom states for Controller (Toggles/Steppers)
   const [teamSize, setTeamSize] = useState(profile?.team_size || 5)
   const [audited, setAudited] = useState(profile?.has_audited_financials || false)
@@ -356,19 +355,21 @@ export const OnboardingStep3: React.FC = () => {
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-250 rounded-[6px] text-red-650 text-xs font-sans">
+        <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-500/30 rounded-[6px] text-red-650 dark:text-red-400 text-xs font-sans font-medium">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Stepper
-          label="Active Team Size"
-          value={teamSize}
-          onChange={setTeamSize}
-          min={1}
-          max={1000}
-        />
+        <div className="[&_input]:text-zinc-100 [&_span]:text-zinc-100 dark:[&_input]:text-zinc-100 dark:[&_span]:text-zinc-100 font-medium">
+          <Stepper
+            label="Active Team Size"
+            value={teamSize}
+            onChange={setTeamSize}
+            min={1}
+            max={1000}
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
@@ -381,7 +382,7 @@ export const OnboardingStep3: React.FC = () => {
             ]}
             {...register('annual_turnover_range')}
           />
-          
+
           <div className="pt-2.5">
             <Toggle
               label="Audited Financial Statements"
@@ -457,7 +458,7 @@ export const OnboardingStep4: React.FC = () => {
   })
 
   const toggleFundingType = (type: string) => {
-    setSelectedFundingTypes(prev => 
+    setSelectedFundingTypes(prev =>
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     )
   }
@@ -543,11 +544,10 @@ export const OnboardingStep4: React.FC = () => {
                   type="button"
                   key={type}
                   onClick={() => toggleFundingType(type)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-sans font-medium border transition-all cursor-pointer ${
-                    isSelected 
-                      ? 'bg-moss border-moss text-white dark:bg-moss-dark dark:border-moss-dark' 
-                      : 'border-zinc-200 text-zinc-500 bg-white dark:border-zinc-700 dark:text-zinc-400 dark:bg-zinc-800 hover:border-zinc-400'
-                  }`}
+                  className={`px-3 py-1.5 rounded-full text-xs font-sans font-medium border transition-all cursor-pointer ${isSelected
+                    ? 'bg-moss border-moss text-white dark:bg-moss-dark dark:border-moss-dark'
+                    : 'border-zinc-200 text-zinc-500 bg-white dark:border-zinc-700 dark:text-zinc-400 dark:bg-zinc-800 hover:border-zinc-400'
+                    }`}
                 >
                   {type}
                 </button>
@@ -566,8 +566,8 @@ export const OnboardingStep4: React.FC = () => {
               { value: 'Actively looking', label: 'Actively Looking', desc: 'Need immediate grant fits' },
               { value: 'Planning ahead', label: 'Planning Ahead', desc: 'Sourcing options for next cycle' }
             ].map((urg) => (
-              <label 
-                key={urg.value} 
+              <label
+                key={urg.value}
                 className="flex items-start space-x-3 border border-zinc-200 dark:border-zinc-700 rounded-[8px] p-3.5 bg-white dark:bg-zinc-800 cursor-pointer hover:border-zinc-305 transition-colors"
               >
                 <input
@@ -622,7 +622,7 @@ export const OnboardingComplete: React.FC = () => {
       {/* Animated Sprout Illustration */}
       <div className="w-20 h-20 bg-moss/10 dark:bg-moss-dark/15 rounded-full flex items-center justify-center relative shadow-sm border border-moss-accent dark:border-moss/10">
         <Sprout className="w-10 h-10 text-moss dark:text-moss-dark animate-[bounce_4s_infinite]" />
-        
+
         {/* Sparkle leaf indicator */}
         <div className="absolute top-2 right-2 w-3.5 h-3.5 bg-moss-dark rounded-full border-2 border-white flex items-center justify-center">
           <Check size={8} className="text-white" strokeWidth={4} />
@@ -655,8 +655,8 @@ export const OnboardingComplete: React.FC = () => {
         </div>
       </div>
 
-      <Button 
-        onClick={() => navigate('/dashboard')} 
+      <Button
+        onClick={() => navigate('/dashboard')}
         className="w-full max-w-xs py-3 flex items-center justify-center space-x-2"
       >
         <span>Explore Dashboard</span>
