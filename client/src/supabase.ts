@@ -29,7 +29,7 @@ export interface Organization {
   team_size?: number
   has_audited_financials?: boolean
   annual_turnover_range?: '<10L' | '10L-50L' | '50L-1Cr' | '>1Cr'
-  has_12A_80G?: boolean
+  has_12a_80g?: boolean
   has_fcra?: boolean
   ngo_darpan_id?: string
   csr_1_registration?: string
@@ -55,7 +55,7 @@ export interface Grant {
   budget_max: number
   deadline: string
   requires_audited_financials: boolean
-  requires_12A_80G: boolean
+  requires_12a_80g: boolean
   requires_fcra: boolean
   requires_ngo_darpan: boolean
   requires_csr_1: boolean
@@ -135,7 +135,7 @@ export const MOCK_GRANTS: Grant[] = [
     budget_max: 2500000,
     deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(), // 45 days
     requires_audited_financials: true,
-    requires_12A_80G: true,
+    requires_12a_80g: true,
     requires_fcra: false,
     requires_ngo_darpan: true,
     requires_csr_1: false,
@@ -162,7 +162,7 @@ export const MOCK_GRANTS: Grant[] = [
     budget_max: 5000000,
     deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 days
     requires_audited_financials: true,
-    requires_12A_80G: true,
+    requires_12a_80g: true,
     requires_fcra: false,
     requires_ngo_darpan: true,
     requires_csr_1: false,
@@ -189,7 +189,7 @@ export const MOCK_GRANTS: Grant[] = [
     budget_max: 10000000,
     deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days
     requires_audited_financials: true,
-    requires_12A_80G: true,
+    requires_12a_80g: true,
     requires_fcra: false,
     requires_ngo_darpan: false,
     requires_csr_1: true,
@@ -216,7 +216,7 @@ export const MOCK_GRANTS: Grant[] = [
     budget_max: 1500000,
     deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
     requires_audited_financials: false,
-    requires_12A_80G: false,
+    requires_12a_80g: false,
     requires_fcra: true,
     requires_ngo_darpan: false,
     requires_csr_1: false,
@@ -243,7 +243,7 @@ export const MOCK_GRANTS: Grant[] = [
     budget_max: 800000,
     deadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days
     requires_audited_financials: false,
-    requires_12A_80G: true,
+    requires_12a_80g: true,
     requires_fcra: false,
     requires_ngo_darpan: true,
     requires_csr_1: false,
