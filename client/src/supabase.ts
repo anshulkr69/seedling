@@ -104,18 +104,18 @@ export interface Project {
   id: string
   org_id: string
   name: string
-  start_date?: string
-  end_date?: string
-  geography?: string
-  beneficiaries_count?: number
-  beneficiary_type?: string
-  target_demographics?: string[]
-  activities?: string
-  outcomes?: string
-  sdg_alignment?: string[]
-  budget_used?: number
-  funding_source?: string
-  utilization_certificate_url?: string
+  start_date?: string | null
+  end_date?: string | null
+  geography?: string | null
+  beneficiaries_count?: number | null
+  beneficiary_type?: string | null
+  target_demographics?: string[] | null
+  activities?: string | null
+  outcomes?: string | null
+  sdg_alignment?: string[] | null
+  budget_used?: number | null
+  funding_source?: string | null
+  utilization_certificate_url?: string | null
   created_at: string
   updated_at: string
 }

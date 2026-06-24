@@ -148,13 +148,13 @@ export const VaultPage: React.FC = () => {
                         <span className="truncate">{project.geography}</span>
                       </div>
                     )}
-                    {project.beneficiaries_count !== undefined && (
+                    {project.beneficiaries_count !== undefined && project.beneficiaries_count !== null && (
                       <div className="flex items-center space-x-2">
                         <Users size={14} className="text-zinc-400" />
                         <span className="tabular-nums">{project.beneficiaries_count.toLocaleString()} beneficiaries</span>
                       </div>
                     )}
-                    {project.budget_used !== undefined && (
+                    {project.budget_used !== undefined && project.budget_used !== null && (
                       <div className="flex items-center space-x-2">
                         <Coins size={14} className="text-zinc-400" />
                         <span className="tabular-nums font-semibold">{currencyFormatter.format(project.budget_used)}</span>

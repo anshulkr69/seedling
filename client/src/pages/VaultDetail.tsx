@@ -49,19 +49,19 @@ const projectSchema = z.object({
   outcomes: z.string().min(10, 'Outcomes description must be at least 10 characters'),
   geography: z.string().min(2, 'Geography/Location is required'),
   beneficiaries_count: z.preprocess(
-    (val) => (val === '' || val === null || val === undefined ? undefined : Number(val)),
-    z.number().int().nonnegative('Beneficiaries count must be a non-negative integer').optional()
+    (val) => (val === '' || val === null || val === undefined ? null : Number(val)),
+    z.number().int().nonnegative('Beneficiaries count must be a non-negative integer').nullable().optional()
   ),
   budget_used: z.preprocess(
     (val) => (val === '' || val === null || val === undefined ? undefined : Number(val)),
     z.number().positive('Budget used must be a positive number')
   ),
-  start_date: z.string().optional().or(z.literal('')),
-  end_date: z.string().optional().or(z.literal('')),
+  start_date: z.string().nullable().optional().or(z.literal('')),
+  end_date: z.string().nullable().optional().or(z.literal('')),
   sdg_alignment: z.array(z.string()).min(1, 'Select at least one cause area / SDG alignment'),
   target_demographics: z.array(z.string()).min(1, 'Select at least one target demographic group'),
   has_utilization_certificate: z.boolean().default(false),
-  utilization_certificate_url: z.string().or(z.literal('')).optional(),
+  utilization_certificate_url: z.string().or(z.literal('')).nullable().optional(),
 }).refine(data => {
   if (data.has_utilization_certificate) {
     if (!data.utilization_certificate_url || data.utilization_certificate_url.trim() === '') {
@@ -165,15 +165,15 @@ export const VaultDetail: React.FC = () => {
     }
 
     const formatDate = (dateStr: string | undefined | null) => {
-      if (!dateStr || dateStr.trim() === '') return undefined;
+      if (!dateStr || dateStr.trim() === '') return null;
       const match = dateStr.match(/^\d{4}-\d{2}-\d{2}$/);
       if (match) return dateStr;
       try {
         const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return undefined;
+        if (isNaN(d.getTime())) return null;
         return d.toISOString().split('T')[0];
       } catch {
-        return undefined;
+        return null;
       }
     };
 
@@ -191,7 +191,7 @@ export const VaultDetail: React.FC = () => {
         budget_used: parsed.data.budget_used,
         utilization_certificate_url: parsed.data.has_utilization_certificate 
           ? parsed.data.utilization_certificate_url 
-          : undefined,
+          : null,
       };
 
       await updateProjectMutation.mutateAsync({ id, body: payload });
