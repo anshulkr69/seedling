@@ -14,5 +14,6 @@ jobs:
             -H "X-Internal-Key: ${{ secrets.GITHUB_ACTIONS_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
             --fail \
-            --retry 3 \
-            --retry-delay 5
+            --retry 5 \
+            --retry-delay 10
+
