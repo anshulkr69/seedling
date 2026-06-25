@@ -8,6 +8,12 @@ app.include_router(match.router, prefix="/match", tags=["matching"])
 app.include_router(draft.router, prefix="/draft", tags=["drafting"])
 
 
+@app.get("/")
+def read_root():
+    return {"message": "Seedling Engine API is active", "docs": "/docs"}
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "seedling-engine"}
+
