@@ -8,8 +8,8 @@ import { OnboardingProgress } from './OnboardingProgress'
 // Auth Layout: minimal, centered box
 export const AuthLayout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#F4F4F5] dark:bg-[#18181B] flex items-center justify-center p-4 transition-colors duration-150">
-      <div className="w-full max-w-[450px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[12px] p-6 md:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-colors duration-150">
+    <div className="min-h-screen bg-bg-page flex items-center justify-center p-4 transition-colors duration-150">
+      <div className="w-full max-w-[450px] bg-bg-surface border border-border-base rounded-[10px] p-6 md:p-8 shadow-none transition-colors duration-150">
         <Outlet />
       </div>
     </div>
@@ -19,15 +19,15 @@ export const AuthLayout: React.FC = () => {
 // Onboarding Layout: centered flow container with top step progress bar
 export const OnboardingLayout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#F4F4F5] dark:bg-[#18181B] flex flex-col transition-colors duration-150 pb-12">
+    <div className="min-h-screen bg-bg-page flex flex-col transition-colors duration-150 pb-12">
       {/* Top indicator header */}
-      <header className="w-full bg-white dark:bg-zinc-900 border-b border-zinc-250 dark:border-zinc-800/80 transition-colors duration-150">
+      <header className="w-full bg-bg-surface border-b border-border-base transition-colors duration-150">
         <OnboardingProgress />
       </header>
 
       {/* Main onboarding form page */}
       <main className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-[620px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[12px] p-6 md:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-colors duration-150">
+        <div className="w-full max-w-[620px] bg-bg-surface border border-border-base rounded-[10px] p-6 md:p-8 shadow-none transition-colors duration-150">
           <Outlet />
         </div>
       </main>
@@ -38,7 +38,7 @@ export const OnboardingLayout: React.FC = () => {
 // App Layout: Desktop sidebar, mobile bottom navbar, floating FAB
 export const AppLayout: React.FC = () => {
   return (
-    <div className="h-screen bg-[#F4F4F5] dark:bg-[#18181B] flex flex-row overflow-hidden transition-colors duration-150">
+    <div className="h-screen bg-bg-page flex flex-row overflow-hidden transition-colors duration-150">
       {/* Sidebar - Desktop Only */}
       <div className="hidden md:block">
         <Sidebar />

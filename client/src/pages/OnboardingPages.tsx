@@ -50,7 +50,7 @@ export const OnboardingStep1: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-satoshi text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+        <h2 className="font-satoshi text-xl font-bold text-text-primary tracking-tight">
           Step 1: Tell us about your organization
         </h2>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 font-sans mt-0.5">
@@ -199,10 +199,10 @@ export const OnboardingStep2: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-satoshi text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+        <h2 className="font-satoshi text-xl font-bold text-text-primary tracking-tight">
           Step 2: Focus & Mission
         </h2>
-        <p className="text-xs text-zinc-550 dark:text-zinc-400 font-sans mt-0.5">
+        <p className="text-xs text-text-secondary font-sans mt-0.5">
           Detail your focus area (mapped to Indian Schedule VII CSR categories).
         </p>
       </div>
@@ -226,14 +226,14 @@ export const OnboardingStep2: React.FC = () => {
               maxLength: { value: 300, message: 'Max 300 characters' }
             })}
           />
-          <div className="flex justify-end text-[10px] text-zinc-400 dark:text-zinc-500 font-sans">
+          <div className="flex justify-end text-[10px] text-text-secondary font-sans">
             {missionText.length}/300 characters
           </div>
         </div>
 
         {/* Cause Area Multi-select Chips */}
         <div className="space-y-2">
-          <span className="text-zinc-700 dark:text-zinc-300 font-sans text-xs font-semibold uppercase tracking-wider block">
+          <span className="text-text-primary font-sans text-xs font-semibold uppercase tracking-wider block">
             Cause Areas (Schedule VII Categories)
           </span>
           <div className="flex flex-wrap gap-2">
@@ -259,14 +259,14 @@ export const OnboardingStep2: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Geography of Impact */}
           <div className="space-y-2">
-            <span className="text-zinc-700 dark:text-zinc-300 font-sans text-xs font-semibold uppercase tracking-wider block">
+            <span className="text-text-primary font-sans text-xs font-semibold uppercase tracking-wider block">
               Geography of Impact
             </span>
             <div className="grid grid-cols-2 gap-2">
               {['Local', 'State', 'National', 'International'].map((geo) => (
                 <label
                   key={geo}
-                  className={`flex items-center space-x-2 border border-zinc-200 dark:border-zinc-700 rounded-[6px] p-2.5 bg-white dark:bg-zinc-800 cursor-pointer text-xs font-sans font-medium text-zinc-700 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors`}
+                  className={`flex items-center space-x-2 border border-border-base rounded-[6px] p-2.5 bg-white dark:bg-zinc-800 cursor-pointer text-xs font-sans font-medium text-text-primary hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors`}
                 >
                   <input
                     type="radio"
@@ -346,10 +346,10 @@ export const OnboardingStep3: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-satoshi text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+        <h2 className="font-satoshi text-xl font-bold text-text-primary tracking-tight">
           Step 3: Capacity & Indian Compliance
         </h2>
-        <p className="text-xs text-zinc-550 dark:text-zinc-400 font-sans mt-0.5">
+        <p className="text-xs text-text-secondary font-sans mt-0.5">
           Specify legal registration parameters to prevent applying to unauthorized tenders.
         </p>
       </div>
@@ -505,10 +505,10 @@ export const OnboardingStep4: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-satoshi text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+        <h2 className="font-satoshi text-xl font-bold text-text-primary tracking-tight">
           Step 4: Funding Preferences
         </h2>
-        <p className="text-xs text-zinc-550 dark:text-zinc-400 font-sans mt-0.5">
+        <p className="text-xs text-text-secondary font-sans mt-0.5">
           Tell us about your budget objectives and timeframe constraints.
         </p>
       </div>
@@ -533,7 +533,7 @@ export const OnboardingStep4: React.FC = () => {
 
         {/* Funding type selector */}
         <div className="space-y-2">
-          <span className="text-zinc-700 dark:text-zinc-300 font-sans text-xs font-semibold uppercase tracking-wider block">
+          <span className="text-text-primary font-sans text-xs font-semibold uppercase tracking-wider block">
             Funding Types Needed
           </span>
           <div className="flex flex-wrap gap-2">
@@ -558,7 +558,7 @@ export const OnboardingStep4: React.FC = () => {
 
         {/* Urgency */}
         <div className="space-y-2">
-          <span className="text-zinc-700 dark:text-zinc-300 font-sans text-xs font-semibold uppercase tracking-wider block">
+          <span className="text-text-primary font-sans text-xs font-semibold uppercase tracking-wider block">
             Application Urgency
           </span>
           <div className="grid grid-cols-2 gap-3">
@@ -568,7 +568,7 @@ export const OnboardingStep4: React.FC = () => {
             ].map((urg) => (
               <label
                 key={urg.value}
-                className="flex items-start space-x-3 border border-zinc-200 dark:border-zinc-700 rounded-[8px] p-3.5 bg-white dark:bg-zinc-800 cursor-pointer hover:border-zinc-305 transition-colors"
+                className="flex items-start space-x-3 border border-border-base rounded-[8px] p-3.5 bg-white dark:bg-zinc-800 cursor-pointer hover:border-zinc-305 transition-colors"
               >
                 <input
                   type="radio"
@@ -577,8 +577,8 @@ export const OnboardingStep4: React.FC = () => {
                   {...register('application_urgency')}
                 />
                 <div className="flex flex-col space-y-0.5">
-                  <span className="text-xs font-sans font-semibold text-zinc-850 dark:text-zinc-200">{urg.label}</span>
-                  <span className="text-[10px] font-sans text-zinc-450 dark:text-zinc-500 leading-none">{urg.desc}</span>
+                  <span className="text-xs font-sans font-semibold text-text-primary">{urg.label}</span>
+                  <span className="text-[10px] font-sans text-text-secondary dark:text-zinc-500 leading-none">{urg.desc}</span>
                 </div>
               </label>
             ))}
@@ -620,7 +620,7 @@ export const OnboardingComplete: React.FC = () => {
   return (
     <div className="text-center py-6 space-y-6 flex flex-col items-center">
       {/* Animated Sprout Illustration */}
-      <div className="w-20 h-20 bg-moss/10 dark:bg-moss-dark/15 rounded-full flex items-center justify-center relative shadow-sm border border-moss-accent dark:border-moss/10">
+      <div className="w-20 h-20 bg-moss/10 dark:bg-moss-dark/15 rounded-full flex items-center justify-center relative shadow-none border border-moss-accent dark:border-moss/10">
         <Sprout className="w-10 h-10 text-moss dark:text-moss-dark animate-[bounce_4s_infinite]" />
 
         {/* Sparkle leaf indicator */}
@@ -630,18 +630,18 @@ export const OnboardingComplete: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <h2 className="font-satoshi text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+        <h2 className="font-satoshi text-2xl font-bold text-text-primary tracking-tight">
           Your Seedling profile is ready!
         </h2>
-        <p className="text-zinc-550 dark:text-zinc-400 text-xs font-sans leading-relaxed max-w-sm mx-auto">
+        <p className="text-text-secondary text-xs font-sans leading-relaxed max-w-sm mx-auto">
           We've analyzed your statutory criteria and causes. You're set up to view matching opportunities.
         </p>
       </div>
 
       {/* Stats match notification */}
-      <div className="bg-moss-accent dark:bg-moss/10 border border-moss/15 rounded-[12px] p-4 max-w-sm w-full transition-all">
+      <div className="bg-moss-accent dark:bg-moss/10 border border-moss/15 rounded-[10px] p-4 max-w-sm w-full transition-all">
         <div className="flex items-center space-x-3.5 justify-center">
-          <div className="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center font-satoshi text-base font-bold text-moss dark:text-moss-dark-hover tabular">
+          <div className="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 shadow-none flex items-center justify-center font-satoshi text-base font-bold text-moss dark:text-moss-dark-hover tabular">
             {matchCount}
           </div>
           <div className="text-left">

@@ -30,11 +30,11 @@ export const GrantTable: React.FC<GrantTableProps> = ({
   // 1. Loading Skeleton Rows (renders 5 placeholder rows that align with the columns)
   if (isLoading) {
     return (
-      <div className="border border-zinc-200 dark:border-zinc-800 rounded-[12px] bg-white dark:bg-zinc-900 overflow-hidden shadow-none animate-pulse">
+      <div className="border border-border-base rounded-[10px] bg-bg-surface overflow-hidden shadow-none animate-pulse">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850/50">
+              <tr className="border-b border-border-base bg-bg-sidebar">
                 <th className="py-4 px-6 h-12 w-2/5" />
                 {isMatchedView && <th className="py-4 px-6 h-12 w-16" />}
                 <th className="py-4 px-6 h-12 w-1/4" />
@@ -42,26 +42,26 @@ export const GrantTable: React.FC<GrantTableProps> = ({
                 <th className="py-4 px-6 h-12 w-24" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-150 dark:divide-zinc-800/80">
+            <tbody className="divide-y divide-border-base">
               {[1, 2, 3, 4, 5].map((n) => (
                 <tr key={n}>
                   <td className="py-5 px-6 space-y-2">
-                    <div className="h-3 w-16 bg-zinc-100 dark:bg-zinc-800 rounded" />
-                    <div className="h-4 w-48 bg-zinc-200 dark:bg-zinc-800 rounded" />
+                    <div className="h-3 w-16 bg-bg-hover/50 rounded" />
+                    <div className="h-4 w-48 bg-bg-hover rounded" />
                   </td>
                   {isMatchedView && (
                     <td className="py-5 px-6">
-                      <div className="h-5 w-12 bg-zinc-200 dark:bg-zinc-800 rounded-full" />
+                      <div className="h-5 w-12 bg-bg-hover rounded-full" />
                     </td>
                   )}
                   <td className="py-5 px-6">
-                    <div className="h-4 w-32 bg-zinc-200 dark:bg-zinc-800 rounded" />
+                    <div className="h-4 w-32 bg-bg-hover rounded" />
                   </td>
                   <td className="py-5 px-6">
-                    <div className="h-4 w-24 bg-zinc-100 dark:bg-zinc-800 rounded" />
+                    <div className="h-4 w-24 bg-bg-hover/50 rounded" />
                   </td>
                   <td className="py-5 px-6">
-                    <div className="h-8 w-20 bg-zinc-200 dark:bg-zinc-800 rounded" />
+                    <div className="h-8 w-20 bg-bg-hover rounded" />
                   </td>
                 </tr>
               ))}
@@ -75,12 +75,12 @@ export const GrantTable: React.FC<GrantTableProps> = ({
   // 2. Empty State
   if (grants.length === 0) {
     return (
-      <div className="border border-zinc-200 dark:border-zinc-800 rounded-[12px] bg-white dark:bg-zinc-900 p-12 text-center flex flex-col items-center">
-        <Landmark className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mb-3" />
-        <h3 className="font-satoshi text-base font-semibold text-zinc-850 dark:text-zinc-200 mb-1">
+      <div className="border border-border-base rounded-[10px] bg-bg-surface p-12 text-center flex flex-col items-center">
+        <Landmark className="w-12 h-12 text-text-secondary opacity-30 mb-3" />
+        <h3 className="font-satoshi text-base font-semibold text-text-primary mb-1">
           No grants found
         </h3>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 font-sans max-w-xs">
+        <p className="text-xs text-text-secondary font-sans max-w-xs">
           Try expanding your search query or adjusting your cause filters to see matches.
         </p>
       </div>
@@ -88,11 +88,11 @@ export const GrantTable: React.FC<GrantTableProps> = ({
   }
 
   return (
-    <div className="border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] bg-white dark:bg-zinc-900 overflow-hidden shadow-none transition-colors duration-150">
+    <div className="border border-border-base rounded-[10px] bg-bg-surface overflow-hidden shadow-none transition-colors duration-150">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[700px]">
           <thead>
-            <tr className="border-b border-[#E8E8E8] dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850/50 text-[11px] font-sans font-semibold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider">
+            <tr className="border-b border-border-base bg-bg-sidebar text-[11px] font-sans font-semibold text-text-secondary uppercase tracking-wider">
               <th className="py-4 px-6 font-semibold">Grant & Funder</th>
               {isMatchedView && <th className="py-4 px-6 font-semibold">Fit Score</th>}
               <th className="py-4 px-6 font-semibold">Funding Range</th>
@@ -100,7 +100,7 @@ export const GrantTable: React.FC<GrantTableProps> = ({
               <th className="py-4 px-6 font-semibold text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E8E8E8] dark:divide-zinc-800/80">
+          <tbody className="divide-y divide-border-base">
             {grants.map((item) => {
               const grant = isMatched(item) ? item.grants : item;
               const fitScore = isMatched(item) ? item.fit_score : undefined;
@@ -112,26 +112,26 @@ export const GrantTable: React.FC<GrantTableProps> = ({
                 : 'No deadline';
 
               // Score-dependent color badge interpolation
-              let fitColor = 'bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400';
+              let fitColor = 'bg-zinc-50 text-zinc-500 border border-border-base dark:bg-zinc-900/50 dark:text-zinc-400';
               if (fitScore !== undefined) {
                 if (fitScore >= 80) {
-                  fitColor = 'bg-moss-accent text-moss dark:bg-moss-dark/15 dark:text-moss-dark-hover';
+                  fitColor = 'bg-moss-accent text-moss border border-border-base';
                 } else if (fitScore >= 50) {
-                  fitColor = 'bg-[#FEF3E2] text-[#9A5B00] dark:bg-[#BA1A1A]/10 dark:text-[#BA1A1A]';
+                  fitColor = 'bg-[#FEF3E2] text-[#9A5B00] dark:bg-amber-500/10 dark:text-amber-500 border border-amber-200/30';
                 }
               }
 
               return (
                 <tr
                   key={item.id}
-                  className="font-sans text-sm hover:bg-zinc-50/50 dark:hover:bg-zinc-850/20 transition-colors duration-150"
+                  className="font-sans text-sm hover:bg-bg-hover/30 transition-colors duration-150"
                 >
                   {/* Grant & Funder */}
                   <td className="py-4 px-6 max-w-sm">
-                    <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase font-semibold tracking-wider block">
+                    <span className="text-[10px] text-text-secondary uppercase font-semibold tracking-wider block">
                       {grant.funder}
                     </span>
-                    <span className="font-semibold text-zinc-850 dark:text-zinc-200 line-clamp-1">
+                    <span className="font-semibold text-text-primary line-clamp-1">
                       {grant.title}
                     </span>
                   </td>
@@ -144,18 +144,18 @@ export const GrantTable: React.FC<GrantTableProps> = ({
                           {fitScore}% Fit
                         </span>
                       ) : (
-                        <span className="text-zinc-400">—</span>
+                        <span className="text-text-secondary">—</span>
                       )}
                     </td>
                   )}
 
                   {/* Funding Range */}
-                  <td className="py-4 px-6 text-zinc-650 dark:text-zinc-450 font-medium tabular-nums">
+                  <td className="py-4 px-6 text-text-primary font-medium tabular-nums">
                     {formattedMin} - {formattedMax}
                   </td>
 
                   {/* Deadline */}
-                  <td className="py-4 px-6 text-zinc-500 dark:text-zinc-400 tabular-nums">
+                  <td className="py-4 px-6 text-text-secondary tabular-nums">
                     {formattedDeadline}
                   </td>
 
@@ -163,7 +163,7 @@ export const GrantTable: React.FC<GrantTableProps> = ({
                   <td className="py-4 px-6 text-right">
                     <button
                       onClick={() => onViewDetails(grant.id)}
-                      className="inline-flex items-center space-x-1 border border-[#E8E8E8] dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-xs font-semibold uppercase tracking-wider rounded-[6px] px-3 py-1.5 transition-colors duration-150 cursor-pointer"
+                      className="inline-flex items-center space-x-1 border border-border-base bg-bg-surface hover:bg-bg-hover text-text-primary text-xs font-semibold uppercase tracking-wider rounded-[6px] px-3 py-1.5 transition-colors duration-150 cursor-pointer"
                     >
                       <span>View</span>
                       <ArrowRight size={12} />

@@ -2,6 +2,7 @@ import type { Response } from 'express';
 import axios from 'axios';
 import { env } from '../config/env.js';
 import type { AuthenticatedRequest } from '../types/index.js';
+import { supabaseAdmin } from '../config/supabase.js';
 
 const engineClient = axios.create({
   baseURL: env.PYTHON_ENGINE_URL,
@@ -51,22 +52,40 @@ export async function triggerMatch(req: AuthenticatedRequest, res: Response): Pr
 /**
  * POST /engine/draft
  * Proxies a draft generation request to the Python engine.
- * Sends org_id + grant_id to: POST /draft/generate on the Python engine.
+ * Sends org_id + grant_id + application_id to: POST /draft on the Python engine.
  *
  * This route has per-org rate limiting applied at the route level (10/hour).
  */
 export async function generateDraft(req: AuthenticatedRequest, res: Response): Promise<void> {
   try {
-    const { grant_id } = req.body;
+    const { grant_id, application_id } = req.body;
 
     if (!grant_id) {
       res.status(400).json({ error: 'grant_id is required' });
       return;
     }
 
-    const response = await engineClient.post('/draft/generate', {
+    let appId = application_id;
+    if (!appId) {
+      // Lookup the application record fallback
+      const { data: existingApp } = await supabaseAdmin
+        .from('applications')
+        .select('id')
+        .eq('org_id', req.user.orgId!)
+        .eq('grant_id', grant_id)
+        .maybeSingle();
+      appId = existingApp?.id;
+    }
+
+    if (!appId) {
+      res.status(404).json({ error: 'No active application found for this grant.' });
+      return;
+    }
+
+    const response = await engineClient.post('/draft', {
       org_id: req.user.orgId,
       grant_id,
+      application_id: appId,
     });
 
     res.json({

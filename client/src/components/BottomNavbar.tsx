@@ -20,7 +20,7 @@ const BottomNavItem: React.FC<BottomNavItemProps> = ({ to, icon, label }) => {
         return `flex flex-col items-center justify-center flex-1 py-2 text-xs font-sans font-medium transition-colors select-none ${
           active 
             ? 'text-moss dark:text-moss-dark font-semibold' 
-            : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-150'
+            : 'text-text-secondary hover:text-zinc-900 dark:hover:text-zinc-150'
         }`
       }}
     >
@@ -29,7 +29,7 @@ const BottomNavItem: React.FC<BottomNavItemProps> = ({ to, icon, label }) => {
         return (
           <>
             <span className={`w-5 h-5 flex items-center justify-center transition-colors duration-150 ${
-              active ? 'text-moss dark:text-moss-dark' : 'text-zinc-400 dark:text-zinc-500'
+              active ? 'text-moss dark:text-moss-dark' : 'text-text-secondary'
             }`}>
               {icon}
             </span>
@@ -43,7 +43,7 @@ const BottomNavItem: React.FC<BottomNavItemProps> = ({ to, icon, label }) => {
 
 export const BottomNavbar: React.FC = () => {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#FAFAFA] dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-around z-45 px-2 pb-[env(safe-area-inset-bottom)] transition-colors duration-150 shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#FAFAFA] dark:bg-zinc-900 border-t border-border-base flex items-center justify-around z-45 px-2 pb-[env(safe-area-inset-bottom)] transition-colors duration-150 shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
       <BottomNavItem to="/dashboard" icon={<LayoutDashboard size={20} />} label="Dashboard" />
       <BottomNavItem to="/grants" icon={<Search size={20} />} label="Find Grants" />
       <BottomNavItem to="/applications" icon={<FileText size={20} />} label="Applications" />

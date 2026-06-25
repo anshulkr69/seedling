@@ -40,20 +40,20 @@ export const ApplicationsPage: React.FC = () => {
     <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
       {/* Header */}
       <div>
-        <h1 className="font-satoshi text-3xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">My Applications</h1>
-        <p className="text-sm font-sans text-zinc-550 dark:text-zinc-400">
+        <h1 className="font-satoshi text-3xl font-bold text-text-primary tracking-tight">My Applications</h1>
+        <p className="text-sm font-sans text-text-secondary">
           Track proposal drafts, checklist compliance, and active pipeline statuses.
         </p>
       </div>
 
       {/* Main Content */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] space-y-4">
+        <div className="flex flex-col items-center justify-center py-20 bg-bg-surface border border-border-base rounded-[10px] space-y-4">
           <Loader2 className="w-8 h-8 text-moss dark:text-moss-dark animate-spin" />
           <span className="text-sm font-sans text-zinc-500 dark:text-zinc-400">Loading applications...</span>
         </div>
       ) : error ? (
-        <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 dark:bg-red-950/5 border border-red-200 dark:border-red-900/50 rounded-[12px] text-center">
+        <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 dark:bg-red-950/5 border border-red-200 dark:border-red-900/50 rounded-[10px] text-center">
           <AlertTriangle className="w-10 h-10 text-red-500 mb-2" />
           <h3 className="font-satoshi text-base font-semibold text-red-900 dark:text-red-400 mb-1">
             Failed to retrieve applications
@@ -63,9 +63,9 @@ export const ApplicationsPage: React.FC = () => {
           </p>
         </div>
       ) : applications.length === 0 ? (
-        <div className="border border-zinc-200 dark:border-zinc-800 rounded-[12px] bg-white dark:bg-zinc-900 p-16 text-center flex flex-col items-center">
+        <div className="border border-border-base rounded-[10px] bg-bg-surface p-16 text-center flex flex-col items-center">
           <FileText className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mb-3" />
-          <h3 className="font-satoshi text-base font-semibold text-zinc-800 dark:text-zinc-200 mb-1">
+          <h3 className="font-satoshi text-base font-semibold text-text-primary mb-1">
             No applications started yet
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 font-sans max-w-xs mb-6 text-center leading-relaxed">
@@ -79,11 +79,11 @@ export const ApplicationsPage: React.FC = () => {
           </Link>
         </div>
       ) : (
-        <div className="border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] bg-white dark:bg-zinc-900 overflow-hidden">
+        <div className="border border-border-base rounded-[10px] bg-bg-surface overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[650px]">
               <thead>
-                <tr className="border-b border-[#E8E8E8] dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850/50 text-[11px] font-sans font-semibold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider">
+                <tr className="border-b border-border-base bg-bg-page dark:bg-zinc-850/50 text-[11px] font-sans font-semibold text-text-secondary dark:text-zinc-500 uppercase tracking-wider">
                   <th className="py-4 px-6 font-semibold">Grant & Funder</th>
                   <th className="py-4 px-6 font-semibold">Status</th>
                   <th className="py-4 px-6 font-semibold">Deadline</th>
@@ -100,14 +100,14 @@ export const ApplicationsPage: React.FC = () => {
                   return (
                     <tr 
                       key={app.id}
-                      className="font-sans text-sm hover:bg-zinc-50/50 dark:hover:bg-zinc-850/20 transition-colors duration-150"
+                      className="font-sans text-sm hover:bg-bg-page/50 dark:hover:bg-zinc-850/20 transition-colors duration-150"
                     >
                       {/* Grant details */}
                       <td className="py-4 px-6 max-w-sm">
                         <span className="text-[10px] text-zinc-400 dark:text-zinc-555 uppercase font-semibold tracking-wider block">
                           {grant?.funder || 'Unknown Funder'}
                         </span>
-                        <span className="font-semibold text-zinc-850 dark:text-zinc-200 line-clamp-1">
+                        <span className="font-semibold text-text-primary line-clamp-1">
                           {grant?.title || 'Untitled Grant'}
                         </span>
                       </td>
@@ -128,7 +128,7 @@ export const ApplicationsPage: React.FC = () => {
                       <td className="py-4 px-6 text-right">
                         <button
                           onClick={() => navigate(`/applications/${app.id}`)}
-                          className="inline-flex items-center space-x-1 border border-[#E8E8E8] dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-xs font-semibold uppercase tracking-wider rounded-[6px] px-3.5 py-1.5 transition-colors duration-150 cursor-pointer"
+                          className="inline-flex items-center space-x-1 border border-border-base hover:border-zinc-350 dark:hover:border-zinc-700 bg-white dark:bg-zinc-850 hover:bg-bg-page dark:hover:bg-zinc-800 text-text-primary text-xs font-semibold uppercase tracking-wider rounded-[6px] px-3.5 py-1.5 transition-colors duration-150 cursor-pointer"
                         >
                           <span>Workspace</span>
                           <ArrowRight size={12} />

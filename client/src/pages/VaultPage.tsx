@@ -47,8 +47,8 @@ export const VaultPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-satoshi text-3xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">Memory Vault</h1>
-          <p className="text-sm font-sans text-zinc-550 dark:text-zinc-400">
+          <h1 className="font-satoshi text-3xl font-bold text-text-primary tracking-tight">Memory Vault</h1>
+          <p className="text-sm font-sans text-text-secondary">
             Log past projects and institutional outcomes to populate AI proposal generation blocks.
           </p>
         </div>
@@ -65,18 +65,18 @@ export const VaultPage: React.FC = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="border border-zinc-200 dark:border-zinc-800 rounded-[12px] p-6 bg-white dark:bg-zinc-900 space-y-4">
+            <div key={n} className="border border-border-base rounded-[10px] p-6 bg-bg-surface space-y-4">
               <div className="h-5 w-1/3 bg-zinc-200 dark:bg-zinc-800 rounded" />
-              <div className="h-4 w-2/3 bg-zinc-100 dark:bg-zinc-800 rounded" />
+              <div className="h-4 w-2/3 bg-bg-hover rounded" />
               <div className="grid grid-cols-2 gap-4">
-                <div className="h-8 bg-zinc-100 dark:bg-zinc-800 rounded" />
-                <div className="h-8 bg-zinc-100 dark:bg-zinc-800 rounded" />
+                <div className="h-8 bg-bg-hover rounded" />
+                <div className="h-8 bg-bg-hover rounded" />
               </div>
             </div>
           ))}
         </div>
       ) : error ? (
-        <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 dark:bg-red-950/5 border border-red-200 dark:border-red-900/50 rounded-[12px] text-center">
+        <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 dark:bg-red-950/5 border border-red-200 dark:border-red-900/50 rounded-[10px] text-center">
           <AlertTriangle className="w-10 h-10 text-red-500 mb-2" />
           <h3 className="font-satoshi text-base font-semibold text-red-900 dark:text-red-400 mb-1">
             Failed to load Memory Vault
@@ -86,12 +86,12 @@ export const VaultPage: React.FC = () => {
           </p>
         </div>
       ) : projects.length === 0 ? (
-        <div className="border border-zinc-200 dark:border-zinc-800 rounded-[12px] bg-white dark:bg-zinc-900 p-16 text-center flex flex-col items-center">
+        <div className="border border-border-base rounded-[10px] bg-bg-surface p-16 text-center flex flex-col items-center">
           <FolderClosed className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mb-3" />
-          <h3 className="font-satoshi text-base font-semibold text-zinc-850 dark:text-zinc-250 mb-1">
+          <h3 className="font-satoshi text-base font-semibold text-text-primary mb-1">
             Your Memory Vault is empty
           </h3>
-          <p className="text-xs text-zinc-550 dark:text-zinc-400 font-sans max-w-sm mb-6 leading-relaxed">
+          <p className="text-xs text-text-secondary font-sans max-w-sm mb-6 leading-relaxed">
             Logging past projects build up your organization's memory, which is used to automatically generate evidence sections in new proposals.
           </p>
           <button 
@@ -117,17 +117,17 @@ export const VaultPage: React.FC = () => {
               <div 
                 key={project.id}
                 onClick={() => navigate(`/vault/${project.id}`)}
-                className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-150 relative group cursor-pointer"
+                className="bg-bg-surface border border-border-base rounded-[10px] p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-150 relative group cursor-pointer"
               >
                 <div>
                   {/* Title & Delete Header */}
                   <div className="flex justify-between items-start gap-4">
-                    <h3 className="font-satoshi text-lg font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1 leading-snug">
+                    <h3 className="font-satoshi text-lg font-semibold text-text-primary line-clamp-1 leading-snug">
                       {project.name}
                     </h3>
                     <button
                       onClick={(e) => handleDelete(e, project.id)}
-                      className="p-1.5 text-zinc-450 hover:text-red-650 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-[6px] transition-all cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      className="p-1.5 text-text-secondary hover:text-red-650 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-[6px] transition-all cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100"
                       title="Delete project"
                     >
                       <Trash2 size={15} />
@@ -135,7 +135,7 @@ export const VaultPage: React.FC = () => {
                   </div>
 
                   {/* Metadata Stats Grid */}
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-4 text-xs font-sans text-zinc-550 dark:text-zinc-400">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-4 text-xs font-sans text-text-secondary">
                     {dateStr && (
                       <div className="flex items-center space-x-2">
                         <Calendar size={14} className="text-zinc-400" />
@@ -163,9 +163,9 @@ export const VaultPage: React.FC = () => {
                   </div>
 
                   {/* Activities & Outcomes Styled Blocks */}
-                  <div className="mt-5 space-y-4 pt-4 border-t border-zinc-100 dark:border-zinc-800/60">
+                  <div className="mt-5 space-y-4 pt-4 border-t border-border-base">
                     <div className="space-y-1">
-                      <div className="flex items-center space-x-1.5 text-[10px] uppercase font-bold tracking-wider text-zinc-400 dark:text-zinc-500">
+                      <div className="flex items-center space-x-1.5 text-[10px] uppercase font-bold tracking-wider text-text-secondary">
                         <Milestone size={12} />
                         <span>Activities Implemented</span>
                       </div>
@@ -175,7 +175,7 @@ export const VaultPage: React.FC = () => {
                     </div>
 
                     <div className="space-y-1">
-                      <div className="flex items-center space-x-1.5 text-[10px] uppercase font-bold tracking-wider text-zinc-400 dark:text-zinc-500">
+                      <div className="flex items-center space-x-1.5 text-[10px] uppercase font-bold tracking-wider text-text-secondary">
                         <BookOpen size={12} />
                         <span>Key Outcomes & Impact</span>
                       </div>
