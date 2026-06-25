@@ -4,6 +4,7 @@ import type { Organization } from '../supabase'
 
 interface AuthContextType {
   user: any
+  session: any
   profile: Organization | null
   loading: boolean
   signUp: (email: string, password: string, name: string) => Promise<{ error: any }>
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<any>(null)
+  const [session, setSession] = useState<any>(null)
   const [profile, setProfile] = useState<Organization | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -48,6 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Get initial session
       const { data: { session } } = await supabase.auth.getSession()
       setUser(session?.user ?? null)
+      setSession(session)
       if (session?.user) {
         await fetchProfile(session.user.id)
       } else {
@@ -58,6 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Listen for changes
       const { data: authData } = supabase.auth.onAuthStateChange(async (_event: string, currentSession: any) => {
         setUser(currentSession?.user ?? null)
+        setSession(currentSession)
         if (currentSession?.user) {
           await fetchProfile(currentSession.user.id)
         } else {
@@ -175,6 +179,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         user,
+        session,
         profile,
         loading,
         signUp,

@@ -16,7 +16,7 @@ export interface Organization {
   team_size: number | null;
   has_audited_financials: boolean;
   annual_turnover_range: string | null;
-  has_12A_80G: boolean;
+  has_12a_80g: boolean;
   has_fcra: boolean;
   ngo_darpan_id: string | null;
   csr_1_registration: string | null;
@@ -62,7 +62,7 @@ export interface Grant {
   budget_max: number | null;
   deadline: string | null;
   requires_audited_financials: boolean;
-  requires_12A_80G: boolean;
+  requires_12a_80g: boolean;
   requires_fcra: boolean;
   requires_ngo_darpan: boolean;
   requires_csr_1: boolean;
