@@ -1,38 +1,317 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&f[]=general-sans@400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-/* ── Seedling Design Tokens ─────────────────────────────────────────────
-   Source: Seedling_DesignUI.md
-   Fonts: Satoshi (headings) + General Sans (UI/body) via Fontshare
+/* ── Seedling Design Tokens (Stitch Assets Match) ───────────────────────
+   Unified Font: Hanken Grotesk (body), Satoshi (headings)
    Base grid: 8px
 ──────────────────────────────────────────────────────────────────────── */
 
-@theme {
-  /* Brand — Moss Green */
-  --color-moss:            #2D5016;
-  --color-moss-hover:      #1E3810;
-  --color-moss-dark:       #4A7C25;
-  --color-moss-dark-hover: #5B9330;
-  --color-moss-tint:       #F4F7F0;
-  --color-moss-accent:     #EAF2E0;
+:root {
+  /* Light Theme (Default) */
+  --bg-page: #f8faf9;               /* Stitch Light Page Background */
+  --bg-surface: #ffffff;            /* Pure White card/surface */
+  --bg-sidebar: #f2f4f3;            /* Sidebar Background */
+  --bg-hover: #e1e3e2;              /* Inactive tab hover bg */
+  --text-primary: #191c1c;          /* Evergreen Noir primary text */
+  --text-secondary: #434845;        /* Muted secondary text */
+  --border-base: #c3c8c3;           /* Outline variant border */
+  --accent-tint: #b5dfcc;           /* Light moss wash active tab bg */
+  
+  --primary-brand: #000000;         /* Primary brand color - black */
+  --primary-hover: #191c1c;         /* Primary brand color hover */
+  --btn-text: #ffffff;              /* Button text color */
+}
 
-  /* Status */
-  --color-amber-tint:  #FEF3E2;
-  --color-amber-text:  #9A5B00;
+.dark {
+  /* Dark Theme (Evergreen Noir) */
+  --bg-page: #0d1f1a;               /* Obsidian Green Page Background */
+  --bg-surface: #13241f;            /* Deep forest card/surface */
+  --bg-sidebar: #091410;            /* Darker green sidebar background */
+  --bg-hover: #3d524a;              /* Dark active/hover tab bg */
+  --text-primary: #f4f6f5;          /* Cool Slate Mist primary text */
+  --text-secondary: #b4ccc1;        /* Muted secondary text */
+  --border-base: #3d524a;           /* Silent Moss border */
+  --accent-tint: rgba(61, 82, 74, 0.45); /* Silent Moss translucent */
+  
+  --primary-brand: #f4f6f5;         /* Cool Slate Mist primary action */
+  --primary-hover: #b4ccc1;         /* Muted sage hover */
+  --btn-text: #0d1f1a;              /* Dark text on primary button */
+}
+
+@theme {
+  /* Core variables */
+  --color-bg-page: var(--bg-page);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-sidebar: var(--bg-sidebar);
+  --color-bg-hover: var(--bg-hover);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-base: var(--border-base);
+
+  /* Override Tailwind utility defaults directly to apply theme globally */
+  --color-white: var(--bg-surface);
+  --color-zinc-50: var(--bg-page);
+  --color-zinc-100: var(--bg-page);
+  --color-zinc-200: var(--border-base);
+  --color-zinc-300: var(--text-secondary);
+  --color-zinc-400: var(--text-secondary);
+  --color-zinc-500: var(--text-secondary);
+  --color-zinc-600: var(--text-secondary);
+  --color-zinc-650: var(--text-secondary);
+  --color-zinc-800: var(--border-base);
+  --color-zinc-900: var(--bg-surface);
+  --color-zinc-950: var(--bg-page);
+  --color-zinc-805: var(--border-base);
+  --color-zinc-250: var(--border-base);
 
   /* Fonts */
-  --font-satoshi:      'Satoshi', sans-serif;
-  --font-sans:         'General Sans', sans-serif;
+  --font-satoshi: 'Satoshi', sans-serif;
+  --font-sans: 'Hanken Grotesk', sans-serif;
+  
+  /* Brand Moss colors */
+  --color-moss: var(--primary-brand);
+  --color-moss-hover: var(--primary-hover);
+  --color-moss-dark: var(--primary-brand);
+  --color-moss-dark-hover: var(--primary-hover);
+  --color-moss-accent: var(--accent-tint);
 }
 
 @layer base {
-  *, *::before, *::after { box-sizing: border-box; }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
   html {
     font-family: var(--font-sans);
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+  }
+
+  body {
+    background-color: var(--bg-page) !important;
+    color: var(--text-primary) !important;
+    font-family: var(--font-sans) !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-satoshi) !important;
+    color: var(--text-primary);
+  }
+
+  /* Support clean focus highlights in dark mode */
+  input:focus, textarea:focus, select:focus {
+    --tw-ring-color: var(--primary-brand);
   }
 
   /* Tabular numbers for all data/stat displays */
-  .tabular { font-variant-numeric: tabular-nums; }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ── Custom Theme CSS Class Overrides ──────────────────────────────────────
+   Allows existing utility classes to automatically pick up design system 
+   variables without modifying every single file in the project.
+──────────────────────────────────────────────────────────────────────── */
+
+/* Page Wrapper Overrides */
+.bg-\[\#F4F4F5\],
+.bg-\[\#FAFAFA\],
+.bg-\[\#F4F6F5\],
+.dark .bg-\[\#18181B\],
+.dark .bg-zinc-950 {
+  background-color: var(--bg-page) !important;
+}
+
+/* Card & Surface Overrides */
+.bg-white,
+.dark .bg-zinc-900,
+.bg-bg-surface {
+  background-color: var(--bg-surface) !important;
+}
+
+/* Border Overrides */
+.border-zinc-200,
+.border-zinc-800,
+.border-\[\#E8E8E8\],
+.dark .border-zinc-800\/80,
+.dark .border-zinc-800\/50 {
+  border-color: var(--border-base) !important;
+}
+
+/* Text Overrides */
+.text-zinc-900,
+.dark .text-zinc-100,
+.text-zinc-850,
+.dark .text-zinc-200 {
+  color: var(--text-primary) !important;
+}
+
+.text-zinc-500,
+.text-zinc-550,
+.dark .text-zinc-400,
+.text-zinc-450 {
+  color: var(--text-secondary) !important;
+}
+
+/* Special Sidebar Item styling */
+.dark aside.bg-zinc-900 {
+  background-color: var(--bg-surface) !important;
+}
+aside.bg-\[\#FAFAFA\] {
+  background-color: var(--bg-sidebar) !important;
+}
+.dark aside.bg-\[\#FAFAFA\] {
+  background-color: var(--bg-surface) !important;
+}
+
+/* Button & Active States mappings */
+button.bg-moss, 
+a.bg-moss,
+button.dark\:bg-moss-dark,
+a.dark\:bg-moss-dark {
+  background-color: var(--primary-brand) !important;
+  color: var(--btn-text) !important;
+}
+button.bg-moss:hover, 
+a.bg-moss:hover,
+button.dark\:bg-moss-dark:hover,
+a.dark\:bg-moss-dark:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+/* Flat-on-Table Style: Override shadows */
+.shadow-sm,
+.shadow-md,
+.shadow-lg,
+.shadow-\[0_4px_14px_rgba\(45\,80\,22\,0\.25\)\] {
+  box-shadow: none !important;
+}
+
+/* Fit Score & Moss Green Text Override */
+.text-moss,
+.text-moss-dark-hover {
+  color: #2D5016 !important;
+}
+.dark .text-moss,
+.dark .text-moss-dark,
+.dark .text-moss-dark-hover {
+  color: #5B9330 !important;
+}
+
+/* Custom Themed Form Controls */
+@layer base {
+  /* 1. Custom Select Dropdown Chevron */
+  select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232D5016' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 16px !important;
+    padding-right: 40px !important;
+  }
+  
+  .dark select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23b4ccc1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+  }
+
+  /* 2. Custom Checkbox */
+  input[type="checkbox"] {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+    border: 1px solid var(--border-base) !important;
+    border-radius: 4px !important;
+    outline: none !important;
+    cursor: pointer !important;
+    background-color: var(--bg-surface) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    transition: all 0.15s ease !important;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: var(--primary-brand) !important;
+    border-color: var(--primary-brand) !important;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "" !important;
+    display: block !important;
+    width: 0.35rem !important;
+    height: 0.6rem !important;
+    border: solid var(--btn-text) !important;
+    border-width: 0 2px 2px 0 !important;
+    transform: rotate(45deg) translate(-1px, -1px) !important;
+  }
+  
+  input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--primary-brand) !important;
+    outline-offset: 1px !important;
+  }
+
+  /* 3. Custom Radio Button */
+  input[type="radio"] {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+    border: 1px solid var(--border-base) !important;
+    border-radius: 50% !important;
+    outline: none !important;
+    cursor: pointer !important;
+    background-color: var(--bg-surface) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    transition: all 0.15s ease !important;
+  }
+  
+  input[type="radio"]:checked {
+    border-color: var(--primary-brand) !important;
+  }
+  
+  input[type="radio"]:checked::after {
+    content: "" !important;
+    display: block !important;
+    width: 0.55rem !important;
+    height: 0.55rem !important;
+    background-color: var(--primary-brand) !important;
+    border-radius: 50% !important;
+  }
+  
+  input[type="radio"]:focus-visible {
+    outline: 2px solid var(--primary-brand) !important;
+    outline-offset: 1px !important;
+  }
+}
+
+/* Toast Animations */
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.25s ease-out forwards;
 }

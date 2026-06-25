@@ -1,0 +1,624 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+.landing-page-container {
+  /* 1. SEEDLING DESIGN SYSTEM COMPLIANT VARIABLES (Light Theme Default) */
+  --bg-page: #faf9f9;             /* Cool Slate Mist (Light background) */
+  --bg-surface: #FFFFFF;          /* Pure White Card */
+  --text-primary: #1b1c1c;        /* Evergreen Noir primary text */
+  --text-secondary: #43493d;      /* Muted Sage secondary text */
+  --border-color: #E8E8E8;        /* Subtle Border */
+  
+  /* Primary Brand Action (Light Mode) */
+  --primary-brand: #2D5016;       /* Moss Green */
+  --primary-hover: #1E3810;       /* Deep Moss Green */
+  --btn-text: #FFFFFF;            /* White text on primary button */
+  --accent-tint: #EAF2E0;         /* Light moss wash tags */
+  
+  /* Status Tokens (Light Theme) */
+  --status-success-bg: #EAF2E0;
+  --status-success-text: #2D5016;
+  --status-warning-bg: #FEF3E2;
+  --status-warning-text: #BA1A1A;
+  --status-muted-bg: #efeded;
+  --status-muted-text: #43493d;
+  
+  /* Typography Scale */
+  --font-heading: 'Satoshi', sans-serif;
+  --font-body: 'General Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --transition-colors: background-color 0.15s ease, border-color 0.15s ease;
+  --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px; /* Base 15px Body text */
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(45, 80, 22, 0.08) 0%, transparent 60%);
+  min-height: 100vh;
+}
+
+/* 2. TYPOGRAPHY SYSTEM (EXACT ALIGNMENT) */
+.landing-page-container h1 {
+  font-family: var(--font-heading);
+  font-size: 64px; /* Display H1 */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.landing-page-container h2 {
+  font-family: var(--font-heading);
+  font-size: 24px; /* Section Title H2 */
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.landing-page-container h3 {
+  font-family: var(--font-heading);
+  font-size: 16px; /* Card Title H3 */
+  font-weight: 600;
+  letter-spacing: 0em;
+}
+
+.landing-page-container .text-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums; /* Tabular numbers for perfect alignment */
+}
+
+.landing-page-container a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 3. BUTTONS SYSTEM (6PX CORNER RADIUS) */
+.landing-page-container .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-body);
+  font-size: 13px; /* Nav / UI Label */
+  font-weight: 500;
+  border-radius: 6px; /* Strict 6px radius */
+  cursor: pointer;
+  transition: var(--transition-colors);
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.landing-page-container .btn-primary {
+  background-color: var(--primary-brand);
+  color: var(--btn-text);
+  border-color: rgba(61, 82, 74, 0.25);
+}
+
+.landing-page-container .btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.landing-page-container .btn-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.landing-page-container .btn-secondary:hover {
+  border-color: var(--text-secondary);
+}
+
+.landing-page-container .btn-ghost {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: none;
+}
+
+.landing-page-container .btn-ghost:hover {
+  background-color: var(--border-color); /* Hover state: #3F3F46 */
+}
+
+/* 4. CONTAINER & STRUCTURAL CARD LAYOUT */
+.landing-page-container .max-width-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.landing-page-container header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  background-color: rgba(13, 26, 21, 0.95); /* Deep Evergreen Noir with transparency */
+  border-bottom: 1px solid #3D524A;
+  padding: 0.75rem 0;
+}
+
+.landing-page-container header .btn-ghost {
+  color: #F4F6F5;
+}
+
+.landing-page-container header .btn-ghost:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.landing-page-container .nav-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.landing-page-container .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #F4F6F5;
+}
+
+.landing-page-container .logo-sprout {
+  filter: drop-shadow(0 0 6px var(--primary-hover));
+}
+
+.landing-page-container .nav-links {
+  display: flex;
+  gap: 2rem;
+  font-size: 13px;
+  color: #B4CCC1;
+  font-weight: 500;
+}
+
+.landing-page-container .nav-links a:hover {
+  color: #F4F6F5;
+  transition: var(--transition-colors);
+}
+
+/* 5. HERO SECTION & LIVE DEMO VIDEO PLAYER */
+.landing-page-container .hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 4rem;
+  padding: 7rem 0;
+  align-items: center;
+}
+
+.landing-page-container .hero-text h1 {
+  margin-bottom: 1.5rem;
+}
+
+.landing-page-container .hero-text p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  max-width: 480px;
+}
+
+.landing-page-container .hero-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Video Player compliance design */
+.landing-page-container .demo-video-wrapper {
+  position: relative;
+  border-radius: 12px; /* Container corner radius */
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-page);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); /* Micro-shadow from design system */
+  overflow: hidden;
+}
+
+.landing-page-container .video-chrome-header {
+  background-color: var(--bg-surface);
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.landing-page-container .chrome-dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.landing-page-container .chrome-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+}
+
+.landing-page-container .chrome-dot.close { background-color: #ef4444; }
+.landing-page-container .chrome-dot.min { background-color: #f59e0b; }
+.landing-page-container .chrome-dot.max { background-color: #10b981; }
+
+.landing-page-container .chrome-address-bar {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding: 0.15rem 2rem;
+  text-align: center;
+  flex-grow: 0.65;
+}
+
+.landing-page-container .video-viewport {
+  height: 350px;
+  position: relative;
+  background-color: var(--bg-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-page-container .video-frame {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.landing-page-container .video-frame.active {
+  opacity: 1;
+  z-index: 10;
+}
+
+.landing-page-container .video-controls {
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.landing-page-container .play-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: var(--transition-colors);
+}
+
+.landing-page-container .play-btn:hover {
+  color: var(--primary-hover);
+}
+
+.landing-page-container .progress-bar-container {
+  flex-grow: 1;
+  height: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.landing-page-container .progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background-color: var(--primary-brand);
+  border-radius: 2px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.landing-page-container .video-play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(24, 24, 27, 0.75);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+.landing-page-container .play-icon-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: var(--primary-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  margin-bottom: 0.75rem;
+}
+
+.landing-page-container .play-icon-circle:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.04);
+  transition: var(--transition-smooth);
+}
+
+.landing-page-container .mock-cursor {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 100;
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translate(-10px, -10px);
+}
+
+/* 6. SLEEK & MINIMAL FEATURES SECTION (DESIGN COMPLIANT) */
+.landing-page-container .sleek-features-section {
+  border-top: 1px solid var(--border-color);
+  padding: 7rem 0;
+}
+
+.landing-page-container .features-header {
+  margin-bottom: 5rem;
+  max-width: 600px;
+}
+
+.landing-page-container .features-header h2 {
+  margin-bottom: 0.75rem;
+}
+
+.landing-page-container .features-header p {
+  color: var(--text-secondary);
+}
+
+.landing-page-container .sleek-features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 1px solid var(--border-color);
+  border-left: 1px solid var(--border-color);
+}
+
+.landing-page-container .sleek-feature-cell {
+  padding: 3rem;
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+.landing-page-container .sleek-feature-cell:hover {
+  background-color: rgba(74, 124, 37, 0.03); /* Subtle accent tint hover */
+}
+
+.landing-page-container .feature-num {
+  font-family: var(--font-mono);
+  font-size: 10px; /* Eyebrow Label size */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary-hover);
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.landing-page-container .sleek-feature-cell h3 {
+  margin-bottom: 0.75rem;
+}
+
+.landing-page-container .sleek-feature-cell p {
+  color: var(--text-secondary);
+  font-size: 15px; /* Base 15px Body text */
+}
+
+/* Sandbox styling removed */
+
+/* 6. PLATFORM IMPACT (STATS BAR) */
+.landing-page-container .stats-bar-section {
+  padding: 4rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  margin-bottom: 5rem;
+}
+
+.landing-page-container .stats-bar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.landing-page-container .stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+}
+
+.landing-page-container .stat-value {
+  font-family: var(--font-heading);
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.landing-page-container .stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+/* 7. THE PROBLEM SECTION */
+.landing-page-container .problem-section {
+  padding: 5rem 0;
+  margin-bottom: 5rem;
+}
+
+.landing-page-container .section-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.landing-page-container .problem-section h2 {
+  font-size: 40px;
+  margin-bottom: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.landing-page-container .problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.landing-page-container .problem-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 2.5rem;
+  transition: var(--transition-smooth);
+}
+
+.landing-page-container .problem-card:hover {
+  border-color: var(--text-secondary);
+  transform: translateY(-2px);
+}
+
+.landing-page-container .problem-icon {
+  font-size: 28px;
+  margin-bottom: 1.5rem;
+}
+
+.landing-page-container .problem-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.landing-page-container .problem-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* 8. CTA BANNER SECTION */
+.landing-page-container .cta-banner-section {
+  background-color: #0D1A15; /* Dark Theme Accent Background */
+  border-top: 1px solid #3D524A;
+  border-bottom: 1px solid #3D524A;
+  padding: 6rem 0;
+  text-align: center;
+}
+
+.landing-page-container .cta-banner-content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.landing-page-container .cta-banner-content h2 {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #F4F6F5; /* White contrast text */
+  margin: 0;
+}
+
+.landing-page-container .cta-banner-content p {
+  font-size: 15px;
+  color: #B4CCC1; /* Sage contrast text */
+  margin: 0 0 1rem 0;
+}
+
+.landing-page-container .btn-cta {
+  background-color: #F4F6F5; /* White button on dark background */
+  color: #0D1A15; /* Dark text */
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.landing-page-container .btn-cta:hover {
+  background-color: #FFFFFF;
+  box-shadow: 0 0 12px rgba(244, 246, 245, 0.2);
+}
+
+/* FOOTER & ALIGNMENT DETAILS */
+.landing-page-container footer {
+  border-top: 1px solid #3D524A;
+  padding: 5rem 0;
+  background-color: #0D1A15; /* Dark Theme Accent Background */
+  text-align: center;
+  color: #B4CCC1; /* Sage contrast text */
+}
+
+.landing-page-container .footer-badge-list {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.landing-page-container .badge {
+  background-color: rgba(255, 255, 255, 0.05); /* Transparent card on dark */
+  color: #B4CCC1;
+  font-size: 11px; /* Badge size */
+  font-family: var(--font-mono);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 968px) {
+  .landing-page-container .hero-grid, 
+  .landing-page-container .sandbox-grid {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+  .landing-page-container .sleek-features-grid {
+    grid-template-columns: 1fr;
+  }
+  .landing-page-container h1 {
+    font-size: 40px; /* H1 size for smaller viewports */
+  }
+}

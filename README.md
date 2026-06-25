@@ -21,10 +21,10 @@ Seedling automates grant discovery, statutory eligibility filtering, AI-powered 
 
 | Branch | Owner | Owns |
 |:-------|:------|:-----|
-| `feature/scraper-api` | Anshu | Scraper + Backend API + DB Migrations |
-| `feature/matching-engine` | Friend A | Matching + Drafting Engine |
-| `feature/frontend-auth` | Friend B | Auth, Onboarding, Shared UI |
-| `feature/frontend-core` | Friend C | Dashboard, Grants, Vault, Applications |
+| `feature/scraper-api` | Anshul | Scraper + Backend API + DB Migrations |
+| `feature/matching-engine` | Arush | Matching + Drafting Engine |
+| `feature/frontend-auth` | Aaryan | Auth, Onboarding, Shared UI |
+| `feature/frontend-core` | Kartikeya | Dashboard, Grants, Vault, Applications |
 
 ---
 
