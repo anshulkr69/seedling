@@ -50,7 +50,7 @@ export async function createApplication(req: AuthenticatedRequest, res: Response
       .insert({
         org_id: req.user.orgId,
         grant_id: parsed.data.grant_id,
-        status: 'exploring',
+        status: 'Exploring',
       })
       .select()
       .single();
@@ -167,8 +167,8 @@ export async function updateApplication(req: AuthenticatedRequest, res: Response
       updated_at: new Date().toISOString(),
     };
 
-    // Auto-set submitted_at when status changes to 'submitted'
-    if (parsed.data.status === 'submitted' && !parsed.data.submitted_at) {
+    // Auto-set submitted_at when status changes to 'Submitted'
+    if (parsed.data.status === 'Submitted' && !parsed.data.submitted_at) {
       updateData.submitted_at = new Date().toISOString();
     }
 

@@ -5,6 +5,8 @@ import { useCreateProjectMutation } from '../hooks/useVault';
 import { Input, Textarea, Toggle, Checkbox } from '../components/Input';
 import { ArrowLeft, Loader2, Save, AlertTriangle } from 'lucide-react';
 import { z } from 'zod';
+import { supabase } from '../supabase';
+import { useAuth } from '../context/AuthContext';
 
 const CAUSE_AREAS = [
   'Education',
@@ -52,16 +54,10 @@ const projectSchema = z.object({
     if (!data.utilization_certificate_url || data.utilization_certificate_url.trim() === '') {
       return false;
     }
-    try {
-      new URL(data.utilization_certificate_url);
-      return true;
-    } catch {
-      return false;
-    }
   }
   return true;
 }, {
-  message: 'Valid URL is required when Utilization Certificate is available',
+  message: 'Utilization Certificate file is required when available',
   path: ['utilization_certificate_url'],
 });
 
@@ -69,6 +65,38 @@ export const VaultNew: React.FC = () => {
   const navigate = useNavigate();
   const createProjectMutation = useCreateProjectMutation();
   const [globalError, setGlobalError] = useState<string | null>(null);
+  
+  const { profile } = useAuth();
+  const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploaded' | 'error'>('idle');
+  const [fileName, setFileName] = useState('');
+
+  const handleUCUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !profile?.id) return;
+
+    setUploading(true);
+    setUploadStatus('idle');
+    const filePath = `${profile.id}/${file.name}`;
+
+    try {
+      const { error } = await supabase.storage
+        .from('project-assets')
+        .upload(filePath, file, { upsert: true });
+
+      if (error) throw error;
+
+      setUploadStatus('uploaded');
+      setFileName(file.name);
+      setValue('utilization_certificate_url', filePath, { shouldValidate: true });
+    } catch (err: any) {
+      console.error('UC upload failed:', err);
+      setUploadStatus('error');
+      alert(err.message || 'File upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const { register, handleSubmit, watch, control, setValue, setError, formState: { errors } } = useForm({
     defaultValues: {
@@ -148,7 +176,7 @@ export const VaultNew: React.FC = () => {
       <div>
         <Link 
           to="/vault" 
-          className="inline-flex items-center text-zinc-450 hover:text-zinc-850 dark:hover:text-zinc-200 text-xs font-semibold uppercase tracking-wider space-x-1.5"
+          className="inline-flex items-center text-text-secondary hover:text-text-primary text-xs font-semibold uppercase tracking-wider space-x-1.5"
         >
           <ArrowLeft size={14} />
           <span>Back to Memory Vault</span>
@@ -157,17 +185,17 @@ export const VaultNew: React.FC = () => {
 
       {/* Header */}
       <div>
-        <h1 className="font-satoshi text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight leading-none">
+        <h1 className="font-satoshi text-2xl md:text-3xl font-bold text-text-primary tracking-tight leading-none">
           Log Past Project
         </h1>
-        <p className="text-sm font-sans text-zinc-550 dark:text-zinc-400 mt-2">
+        <p className="text-sm font-sans text-text-secondary mt-2">
           Detail your NGO's programmatic history to populate evidence sections in automated AI grant proposals.
         </p>
       </div>
 
       {/* Global Validation Alert */}
       {globalError && (
-        <div className="p-4 bg-red-50 dark:bg-red-950/15 border border-red-200 dark:border-red-900/50 rounded-[12px] text-xs text-red-650 dark:text-red-400 font-sans flex items-start space-x-2 animate-[fadeIn_0.15s_ease-out]">
+        <div className="p-4 bg-red-50 dark:bg-red-950/15 border border-red-200 dark:border-red-900/50 rounded-[10px] text-xs text-red-650 dark:text-red-400 font-sans flex items-start space-x-2 animate-[fadeIn_0.15s_ease-out]">
           <AlertTriangle size={16} className="shrink-0 mt-0.5 text-red-500" />
           <span>{globalError}</span>
         </div>
@@ -177,12 +205,12 @@ export const VaultNew: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         
         {/* Section 1: Basic Info */}
-        <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-6">
-          <div className="border-b border-zinc-100 dark:border-zinc-800 pb-3">
-            <h3 className="font-satoshi text-base font-bold text-zinc-800 dark:text-zinc-200">
+        <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-6">
+          <div className="border-b border-border-base pb-3">
+            <h3 className="font-satoshi text-base font-bold text-text-primary">
               Project Identification & Scope
             </h3>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 font-sans">
+            <p className="text-xs text-text-secondary mt-1 font-sans">
               Enter names, geographies, and timelines associated with the initiative.
             </p>
           </div>
@@ -237,12 +265,12 @@ export const VaultNew: React.FC = () => {
         </div>
 
         {/* Section 2: Narrative & Impact */}
-        <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-6">
-          <div className="border-b border-zinc-100 dark:border-zinc-800 pb-3">
-            <h3 className="font-satoshi text-base font-bold text-zinc-800 dark:text-zinc-200">
+        <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-6">
+          <div className="border-b border-border-base pb-3">
+            <h3 className="font-satoshi text-base font-bold text-text-primary">
               Programmatic Activities & Impact
             </h3>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 font-sans">
+            <p className="text-xs text-text-secondary mt-1 font-sans">
               Narrate exactly how funds were deployed and what measurable changes occurred.
             </p>
           </div>
@@ -267,16 +295,16 @@ export const VaultNew: React.FC = () => {
         </div>
 
         {/* Section 3: Cause Areas and Target Demographics */}
-        <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-6">
+        <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-6">
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Cause Areas */}
             <div className="space-y-4">
-              <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2">
-                <h3 className="font-satoshi text-base font-bold text-zinc-850 dark:text-zinc-200">
+              <div className="border-b border-border-base pb-2">
+                <h3 className="font-satoshi text-base font-bold text-text-primary">
                   Cause Areas / SDG Alignment *
                 </h3>
-                <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-sans mt-0.5">
+                <p className="text-[11px] text-text-secondary font-sans mt-0.5">
                   Select matching category blocks.
                 </p>
               </div>
@@ -306,11 +334,11 @@ export const VaultNew: React.FC = () => {
 
             {/* Target Demographics */}
             <div className="space-y-4">
-              <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2">
-                <h3 className="font-satoshi text-base font-bold text-zinc-850 dark:text-zinc-200">
+              <div className="border-b border-border-base pb-2">
+                <h3 className="font-satoshi text-base font-bold text-text-primary">
                   Target Demographics *
                 </h3>
-                <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-sans mt-0.5">
+                <p className="text-[11px] text-text-secondary font-sans mt-0.5">
                   Identify groups supported by the project.
                 </p>
               </div>
@@ -341,12 +369,12 @@ export const VaultNew: React.FC = () => {
         </div>
 
         {/* Section 4: Utilization Audit */}
-        <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-6">
-          <div className="border-b border-zinc-100 dark:border-zinc-800 pb-3">
-            <h3 className="font-satoshi text-base font-bold text-zinc-800 dark:text-zinc-200">
+        <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-6">
+          <div className="border-b border-border-base pb-3">
+            <h3 className="font-satoshi text-base font-bold text-text-primary">
               Audit & Verification
             </h3>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 font-sans">
+            <p className="text-xs text-text-secondary mt-1 font-sans">
               Provide compliance files for verification auditing.
             </p>
           </div>
@@ -366,13 +394,55 @@ export const VaultNew: React.FC = () => {
             />
 
             {hasUC && (
-              <div className="pt-2 animate-[fadeIn_0.15s_ease-out]">
-                <Input
-                  label="Utilization Certificate URL *"
-                  placeholder="https://example-ngo.org/documents/uc-project-1.pdf"
-                  error={errors.utilization_certificate_url?.message}
-                  {...register('utilization_certificate_url')}
-                />
+              <div className="pt-2 animate-[fadeIn_0.15s_ease-out] space-y-2">
+                <label className="block text-xs font-sans font-semibold text-zinc-700 dark:text-zinc-350">
+                  Utilization Certificate File *
+                </label>
+                <div className="border border-border-base rounded-[8px] p-4 flex items-center justify-between bg-bg-page/50 dark:bg-zinc-950/20">
+                  <div>
+                    {uploadStatus === 'uploaded' ? (
+                      <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-150 block truncate max-w-xs">
+                        📎 {fileName || 'utilization_certificate.pdf'}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-zinc-400 dark:text-text-secondary block">
+                        Upload utilization audit PDF (Max 5MB)
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <input
+                      type="file"
+                      id="upload-uc-file"
+                      className="hidden"
+                      accept=".pdf"
+                      onChange={handleUCUpload}
+                    />
+                    {uploading ? (
+                      <span className="text-xs font-semibold text-zinc-500 animate-pulse">Uploading...</span>
+                    ) : uploadStatus === 'uploaded' ? (
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('upload-uc-file')?.click()}
+                        className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline cursor-pointer"
+                      >
+                        Change File
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('upload-uc-file')?.click()}
+                        className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        Upload UC
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {errors.utilization_certificate_url && (
+                  <span className="text-red-500 text-xs font-sans block">{errors.utilization_certificate_url.message}</span>
+                )}
               </div>
             )}
           </div>
@@ -382,7 +452,7 @@ export const VaultNew: React.FC = () => {
         <div className="flex items-center justify-end space-x-4 pt-2">
           <Link
             to="/vault"
-            className="text-xs font-sans font-semibold text-zinc-550 dark:text-zinc-450 hover:text-zinc-850 dark:hover:text-zinc-200 px-4 py-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 rounded-[6px] transition-colors cursor-pointer"
+            className="text-xs font-sans font-semibold text-text-secondary dark:text-text-secondary hover:text-text-primary px-4 py-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 rounded-[6px] transition-colors cursor-pointer"
           >
             Cancel
           </Link>

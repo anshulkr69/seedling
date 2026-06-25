@@ -65,7 +65,14 @@ export const Settings: React.FC = () => {
     }
   })
 
-  // Simulated upload statuses
+  // Password change states
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passMessage, setPassMessage] = useState<string | null>(null)
+  const [passError, setPassError] = useState<string | null>(null)
+  const [passLoading, setPassLoading] = useState(false)
+
+  // Real upload statuses
   const [uploads, setUploads] = useState({
     cert12A: profile?.has_12a_80g ? 'Uploaded' : 'Not uploaded',
     certFCRA: profile?.has_fcra ? 'Uploaded' : 'Not uploaded',
@@ -73,14 +80,67 @@ export const Settings: React.FC = () => {
     certCSR1: profile?.csr_1_registration ? 'Uploaded' : 'Not uploaded'
   })
 
-  const simulateUpload = (type: keyof typeof uploads) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, type: keyof typeof uploads) => {
+    const file = event.target.files?.[0]
+    if (!file || !profile?.id) return
+
     setUploads(prev => ({ ...prev, [type]: 'Uploading...' }))
-    setTimeout(() => {
+    const filePath = `${profile.id}/${file.name}`
+
+    try {
+      const { error } = await supabase.storage
+        .from('compliance-documents')
+        .upload(filePath, file, { upsert: true })
+
+      if (error) throw error
+
       setUploads(prev => ({ ...prev, [type]: 'Uploaded' }))
       if (type === 'cert12A') setHas12A80G(true)
       if (type === 'certFCRA') setHasFCRA(true)
       if (type === 'auditReport') setAudited(true)
-    }, 1200)
+    } catch (err: any) {
+      console.error('File upload failed:', err)
+      alert(err.message || 'File upload failed')
+      setUploads(prev => ({ 
+        ...prev, 
+        [type]: (type === 'cert12A' && profile?.has_12a_80g) || 
+                (type === 'certFCRA' && profile?.has_fcra) || 
+                (type === 'auditReport' && profile?.has_audited_financials) 
+                  ? 'Uploaded' : 'Not uploaded' 
+      }))
+    }
+  }
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setPassMessage(null)
+    setPassError(null)
+
+    if (newPassword.length < 6) {
+      setPassError('Password must be at least 6 characters.')
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPassError('Passwords do not match.')
+      return
+    }
+
+    setPassLoading(true)
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword })
+      if (error) {
+        setPassError(error.message)
+      } else {
+        setPassMessage('Password updated successfully.')
+        setNewPassword('')
+        setConfirmPassword('')
+      }
+    } catch (err: any) {
+      setPassError('An unexpected error occurred.')
+    } finally {
+      setPassLoading(false)
+    }
   }
 
   // Submit profile updates
@@ -152,7 +212,7 @@ export const Settings: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-satoshi text-3xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+          <h1 className="font-satoshi text-3xl font-bold text-text-primary tracking-tight">
             Settings
           </h1>
           <p className="text-sm font-sans text-zinc-500 dark:text-zinc-400">
@@ -163,7 +223,7 @@ export const Settings: React.FC = () => {
         {/* Theme Switcher */}
         <button
           onClick={toggleTheme}
-          className="flex items-center space-x-2 border border-zinc-200 dark:border-zinc-800 rounded-[6px] px-3.5 py-2 bg-white dark:bg-zinc-900 text-zinc-650 dark:text-zinc-350 hover:border-zinc-350 dark:hover:border-zinc-700 transition-colors text-xs font-semibold uppercase tracking-wider cursor-pointer"
+          className="flex items-center space-x-2 border border-border-base rounded-[6px] px-3.5 py-2 bg-bg-surface text-zinc-650 dark:text-zinc-350 hover:border-zinc-350 dark:hover:border-zinc-700 transition-colors text-xs font-semibold uppercase tracking-wider cursor-pointer"
         >
           {isDarkMode ? (
             <>
@@ -181,14 +241,14 @@ export const Settings: React.FC = () => {
 
       {/* Save Success/Error Banner */}
       {message && (
-        <div className="p-3 bg-zinc-50 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 rounded-[6px] text-zinc-800 dark:text-zinc-200 text-xs font-sans flex items-center space-x-2 animate-[scaleIn_0.15s_ease-out]">
+        <div className="p-3 bg-bg-page dark:bg-zinc-850/50 border border-border-base rounded-[6px] text-text-primary text-xs font-sans flex items-center space-x-2 animate-[scaleIn_0.15s_ease-out]">
           <Info size={16} className="text-moss dark:text-moss-dark" />
           <span>{message}</span>
         </div>
       )}
 
       {/* Horizontal Tabs */}
-      <div className="flex border-b border-zinc-200 dark:border-zinc-800 space-x-6">
+      <div className="flex border-b border-border-base space-x-6">
         <button
           onClick={() => { setActiveTab('profile'); setMessage(null); }}
           className={`pb-3 text-sm font-sans font-semibold border-b-2 transition-colors cursor-pointer ${
@@ -222,7 +282,7 @@ export const Settings: React.FC = () => {
       </div>
 
       {/* Tab Panels */}
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[12px] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors duration-150">
+      <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors duration-150">
         
         {/* Profile Tab */}
         {activeTab === 'profile' && (
@@ -331,7 +391,7 @@ export const Settings: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/80 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-base pt-4">
                 <Toggle
                   label="12A / 80G Tax Exempt Certificate"
                   helperText="Required by institutional foundations"
@@ -346,7 +406,7 @@ export const Settings: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/80 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-base pt-4">
                 <Input
                   label="NGO Darpan ID (Optional)"
                   placeholder="e.g. KA/2018/019XXXX"
@@ -362,94 +422,130 @@ export const Settings: React.FC = () => {
             </div>
 
             {/* Document Upload slots */}
-            <div className="space-y-3 border-t border-zinc-200 dark:border-zinc-800 pt-6">
-              <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <div className="space-y-3 border-t border-border-base pt-6">
+              <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-text-primary">
                 Compliance Document Storage
               </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 12A/80G Upload slot */}
-                <div className="border border-zinc-200 dark:border-zinc-800 rounded-[8px] p-4 flex items-center justify-between">
+                <div className="border border-border-base rounded-[8px] p-4 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 block">12A / 80G Certificate</span>
-                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500">PDF, Max 5MB</span>
+                    <span className="text-xs font-semibold text-text-primary block">12A / 80G Certificate</span>
+                    <span className="text-[10px] text-zinc-400 dark:text-text-secondary">PDF, Max 5MB</span>
                   </div>
                   
-                  {uploads.cert12A === 'Uploaded' ? (
-                    <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => simulateUpload('cert12A')}
-                      disabled={uploads.cert12A === 'Uploading...'}
-                      className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <UploadCloud size={14} /> {uploads.cert12A === 'Uploading...' ? 'Uploading...' : 'Upload'}
-                    </button>
-                  )}
+                  <div>
+                    <input
+                      type="file"
+                      id="upload-cert12A"
+                      className="hidden"
+                      accept=".pdf"
+                      onChange={(e) => handleFileUpload(e, 'cert12A')}
+                    />
+                    {uploads.cert12A === 'Uploaded' ? (
+                      <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('upload-cert12A')?.click()}
+                        disabled={uploads.cert12A === 'Uploading...'}
+                        className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <UploadCloud size={14} /> {uploads.cert12A === 'Uploading...' ? 'Uploading...' : 'Upload'}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* FCRA Upload slot */}
-                <div className="border border-zinc-200 dark:border-zinc-800 rounded-[8px] p-4 flex items-center justify-between">
+                <div className="border border-border-base rounded-[8px] p-4 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 block">FCRA Certificate</span>
-                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500">PDF, Max 5MB</span>
+                    <span className="text-xs font-semibold text-text-primary block">FCRA Certificate</span>
+                    <span className="text-[10px] text-zinc-400 dark:text-zinc-555 font-sans">PDF, Max 5MB</span>
                   </div>
                   
-                  {uploads.certFCRA === 'Uploaded' ? (
-                    <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => simulateUpload('certFCRA')}
-                      disabled={uploads.certFCRA === 'Uploading...'}
-                      className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <UploadCloud size={14} /> {uploads.certFCRA === 'Uploading...' ? 'Uploading...' : 'Upload'}
-                    </button>
-                  )}
+                  <div>
+                    <input
+                      type="file"
+                      id="upload-certFCRA"
+                      className="hidden"
+                      accept=".pdf"
+                      onChange={(e) => handleFileUpload(e, 'certFCRA')}
+                    />
+                    {uploads.certFCRA === 'Uploaded' ? (
+                      <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('upload-certFCRA')?.click()}
+                        disabled={uploads.certFCRA === 'Uploading...'}
+                        className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <UploadCloud size={14} /> {uploads.certFCRA === 'Uploading...' ? 'Uploading...' : 'Upload'}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Audit Certificate */}
-                <div className="border border-zinc-200 dark:border-zinc-800 rounded-[8px] p-4 flex items-center justify-between">
+                <div className="border border-border-base rounded-[8px] p-4 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 block">Audited Balance Sheets</span>
-                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500">PDF, Max 10MB</span>
+                    <span className="text-xs font-semibold text-text-primary block">Audited Balance Sheets</span>
+                    <span className="text-[10px] text-zinc-400 dark:text-text-secondary">PDF, Max 10MB</span>
                   </div>
                   
-                  {uploads.auditReport === 'Uploaded' ? (
-                    <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => simulateUpload('auditReport')}
-                      disabled={uploads.auditReport === 'Uploading...'}
-                      className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <UploadCloud size={14} /> {uploads.auditReport === 'Uploading...' ? 'Uploading...' : 'Upload'}
-                    </button>
-                  )}
+                  <div>
+                    <input
+                      type="file"
+                      id="upload-auditReport"
+                      className="hidden"
+                      accept=".pdf"
+                      onChange={(e) => handleFileUpload(e, 'auditReport')}
+                    />
+                    {uploads.auditReport === 'Uploaded' ? (
+                      <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('upload-auditReport')?.click()}
+                        disabled={uploads.auditReport === 'Uploading...'}
+                        className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <UploadCloud size={14} /> {uploads.auditReport === 'Uploading...' ? 'Uploading...' : 'Upload'}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* CSR-1 Certificate */}
-                <div className="border border-zinc-200 dark:border-zinc-800 rounded-[8px] p-4 flex items-center justify-between">
+                <div className="border border-border-base rounded-[8px] p-4 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 block">CSR-1 registration</span>
-                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500">PDF, Max 5MB</span>
+                    <span className="text-xs font-semibold text-text-primary block">CSR-1 registration</span>
+                    <span className="text-[10px] text-zinc-400 dark:text-text-secondary">PDF, Max 5MB</span>
                   </div>
                   
-                  {uploads.certCSR1 === 'Uploaded' ? (
-                    <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => simulateUpload('certCSR1')}
-                      disabled={uploads.certCSR1 === 'Uploading...'}
-                      className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <UploadCloud size={14} /> {uploads.certCSR1 === 'Uploading...' ? 'Uploading...' : 'Upload'}
-                    </button>
-                  )}
+                  <div>
+                    <input
+                      type="file"
+                      id="upload-certCSR1"
+                      className="hidden"
+                      accept=".pdf"
+                      onChange={(e) => handleFileUpload(e, 'certCSR1')}
+                    />
+                    {uploads.certCSR1 === 'Uploaded' ? (
+                      <span className="text-xs font-bold text-moss dark:text-moss-dark-hover flex items-center gap-1"><CheckCircle size={14} /> Uploaded</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('upload-certCSR1')?.click()}
+                        disabled={uploads.certCSR1 === 'Uploading...'}
+                        className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <UploadCloud size={14} /> {uploads.certCSR1 === 'Uploading...' ? 'Uploading...' : 'Upload'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -465,25 +561,47 @@ export const Settings: React.FC = () => {
           <div className="space-y-6">
             <div className="space-y-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-550 block mb-1">
+                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-text-secondary block mb-1">
                   Registered Email Address
                 </span>
-                <span className="text-sm font-sans font-semibold text-zinc-850 dark:text-zinc-200">
+                <span className="text-sm font-sans font-semibold text-text-primary">
                   {user?.email || 'test@example.com'}
                 </span>
               </div>
 
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-550 block mb-1">
-                  Security
-                </span>
-                <button
-                  type="button"
-                  onClick={() => alert('Password reset simulation sent to ' + user?.email)}
-                  className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  Send password reset email
-                </button>
+              <div className="border-t border-border-base pt-4 space-y-4">
+                <h3 className="font-satoshi text-base font-bold text-text-primary tracking-tight">
+                  Update Account Password
+                </h3>
+                
+                {passMessage && (
+                  <p className="text-xs text-moss dark:text-moss-dark-hover font-semibold font-sans">{passMessage}</p>
+                )}
+                {passError && (
+                  <p className="text-xs text-red-550 dark:text-red-400 font-semibold font-sans">{passError}</p>
+                )}
+
+                <form onSubmit={handlePasswordChange} className="space-y-4 max-w-sm">
+                  <Input
+                    label="New Password"
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <Input
+                    label="Confirm New Password"
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <Button type="submit" disabled={passLoading} className="py-2 px-4">
+                    {passLoading ? 'Updating...' : 'Update Password'}
+                  </Button>
+                </form>
               </div>
             </div>
 

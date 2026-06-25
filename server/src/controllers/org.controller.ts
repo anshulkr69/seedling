@@ -95,6 +95,52 @@ export async function updateProfile(req: AuthenticatedRequest, res: Response): P
       return;
     }
 
+    // Fetch current organization data to check guards
+    const { data: existingOrg, error: fetchErr } = await supabaseAdmin
+      .from('organizations')
+      .select('*')
+      .eq('id', req.user.orgId)
+      .single();
+
+    if (fetchErr || !existingOrg) {
+      res.status(404).json({ error: 'Organization profile not found in database.' });
+      return;
+    }
+
+    // Guard step increments
+    const targetStep = parsed.data.onboarding_step;
+    if (targetStep !== undefined && targetStep > existingOrg.onboarding_step) {
+      // Step 2 requires Step 1 completed (name, type, location)
+      if (targetStep >= 2) {
+        const name = parsed.data.name || existingOrg.name;
+        const type = parsed.data.type || existingOrg.type;
+        const location = parsed.data.location || existingOrg.location;
+        if (!name || !type || !location) {
+          res.status(400).json({ error: 'Prerequisite fields for Onboarding Step 1 (Name, Type, Location) are missing.' });
+          return;
+        }
+      }
+      
+      // Step 3 requires Step 2 completed (mission_statement)
+      if (targetStep >= 3) {
+        const mission = parsed.data.mission_statement || existingOrg.mission_statement;
+        if (!mission) {
+          res.status(400).json({ error: 'Prerequisite fields for Onboarding Step 2 (Mission Statement) are missing.' });
+          return;
+        }
+      }
+
+      // Step 4 requires Step 3 completed (team_size, annual_turnover_range)
+      if (targetStep >= 4) {
+        const teamSize = parsed.data.team_size !== undefined ? parsed.data.team_size : existingOrg.team_size;
+        const turnover = parsed.data.annual_turnover_range || existingOrg.annual_turnover_range;
+        if (teamSize === undefined || teamSize === null || !turnover) {
+          res.status(400).json({ error: 'Prerequisite fields for Onboarding Step 3 (Team Size, Annual Turnover Range) are missing.' });
+          return;
+        }
+      }
+    }
+
     const { data, error } = await supabaseAdmin
       .from('organizations')
       .update({

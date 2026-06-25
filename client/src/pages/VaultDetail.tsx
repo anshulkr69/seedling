@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { z } from 'zod';
 import { format } from 'date-fns';
+import { supabase } from '../supabase';
+import { useAuth } from '../context/AuthContext';
 
 const CAUSE_AREAS = [
   'Education',
@@ -67,16 +69,10 @@ const projectSchema = z.object({
     if (!data.utilization_certificate_url || data.utilization_certificate_url.trim() === '') {
       return false;
     }
-    try {
-      new URL(data.utilization_certificate_url);
-      return true;
-    } catch {
-      return false;
-    }
   }
   return true;
 }, {
-  message: 'Valid URL is required when Utilization Certificate is available',
+  message: 'Utilization Certificate file is required when available',
   path: ['utilization_certificate_url'],
 });
 
@@ -85,9 +81,53 @@ export const VaultDetail: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
 
+  const { profile } = useAuth();
+  const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploaded' | 'error'>('idle');
+  const [fileName, setFileName] = useState('');
+
+  const handleUCUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !profile?.id) return;
+
+    setUploading(true);
+    setUploadStatus('idle');
+    const filePath = `${profile.id}/${file.name}`;
+
+    try {
+      const { error } = await supabase.storage
+        .from('project-assets')
+        .upload(filePath, file, { upsert: true });
+
+      if (error) throw error;
+
+      setUploadStatus('uploaded');
+      setFileName(file.name);
+      setValue('utilization_certificate_url', filePath, { shouldValidate: true });
+    } catch (err: any) {
+      console.error('UC upload failed:', err);
+      setUploadStatus('error');
+      alert(err.message || 'File upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   // Queries & Mutations
   const { data: project, isLoading: projectLoading, error: projectError } = useProjectDetailQuery(id);
   const updateProjectMutation = useUpdateProjectMutation();
+
+  // Sync upload status and filename when project details are loaded
+  useEffect(() => {
+    if (project?.utilization_certificate_url) {
+      setUploadStatus('uploaded');
+      const parts = project.utilization_certificate_url.split('/');
+      setFileName(parts[parts.length - 1] || 'utilization_certificate.pdf');
+    } else {
+      setUploadStatus('idle');
+      setFileName('');
+    }
+  }, [project?.utilization_certificate_url]);
 
   const { register, handleSubmit, watch, control, setValue, reset, setError, formState: { errors } } = useForm({
     defaultValues: {
@@ -205,14 +245,14 @@ export const VaultDetail: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center py-32 space-y-4">
         <Loader2 className="w-8 h-8 text-moss dark:text-moss-dark animate-spin" />
-        <span className="text-sm font-sans text-zinc-550 dark:text-zinc-400">Fetching project details...</span>
+        <span className="text-sm font-sans text-text-secondary">Fetching project details...</span>
       </div>
     );
   }
 
   if (projectError || !project) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 dark:bg-red-950/5 border border-red-200 dark:border-red-900/50 rounded-[12px] text-center max-w-lg mx-auto mt-10">
+      <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 dark:bg-red-950/5 border border-red-200 dark:border-red-900/50 rounded-[10px] text-center max-w-lg mx-auto mt-10">
         <AlertTriangle className="w-10 h-10 text-red-500 mb-2" />
         <h3 className="font-satoshi text-base font-semibold text-red-900 dark:text-red-400 mb-1">
           Failed to load Project details
@@ -263,7 +303,7 @@ export const VaultDetail: React.FC = () => {
       <div className="flex items-center justify-between">
         <Link 
           to="/vault" 
-          className="inline-flex items-center text-zinc-450 hover:text-zinc-850 dark:hover:text-zinc-200 text-xs font-semibold uppercase tracking-wider space-x-1.5"
+          className="inline-flex items-center text-text-secondary hover:text-text-primary text-xs font-semibold uppercase tracking-wider space-x-1.5"
         >
           <ArrowLeft size={14} />
           <span>Back to Memory Vault</span>
@@ -273,7 +313,7 @@ export const VaultDetail: React.FC = () => {
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-[6px] cursor-pointer flex items-center space-x-1.5 transition-colors shadow-none"
+            className="border border-border-base bg-bg-surface hover:bg-bg-page dark:hover:bg-zinc-800 text-text-primary text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-[6px] cursor-pointer flex items-center space-x-1.5 transition-colors shadow-none"
           >
             <Edit3 size={14} />
             <span>Edit Project</span>
@@ -286,7 +326,7 @@ export const VaultDetail: React.FC = () => {
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             {project.geography && (
-              <span className="inline-flex items-center space-x-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-650 dark:text-zinc-450 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full font-sans">
+              <span className="inline-flex items-center space-x-1 bg-bg-hover text-zinc-650 dark:text-text-secondary text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full font-sans">
                 <MapPin size={10} />
                 <span>{project.geography}</span>
               </span>
@@ -298,7 +338,7 @@ export const VaultDetail: React.FC = () => {
               </span>
             )}
           </div>
-          <h1 className="font-satoshi text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight leading-snug">
+          <h1 className="font-satoshi text-2xl md:text-3xl font-bold text-text-primary tracking-tight leading-snug">
             {project.name}
           </h1>
         </div>
@@ -306,7 +346,7 @@ export const VaultDetail: React.FC = () => {
 
       {/* Global Validation Error */}
       {isEditing && globalError && (
-        <div className="p-4 bg-red-50 dark:bg-red-950/15 border border-red-200 dark:border-red-900/50 rounded-[12px] text-xs text-red-650 dark:text-red-400 font-sans flex items-start space-x-2 animate-[fadeIn_0.15s_ease-out]">
+        <div className="p-4 bg-red-50 dark:bg-red-950/15 border border-red-200 dark:border-red-900/50 rounded-[10px] text-xs text-red-650 dark:text-red-400 font-sans flex items-start space-x-2 animate-[fadeIn_0.15s_ease-out]">
           <AlertTriangle size={16} className="shrink-0 mt-0.5 text-red-500" />
           <span>{globalError}</span>
         </div>
@@ -316,12 +356,12 @@ export const VaultDetail: React.FC = () => {
       {isEditing ? (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Form Header */}
-          <div className="flex items-center justify-between bg-zinc-55/5 dark:bg-zinc-950/20 p-4 border border-zinc-200/50 dark:border-zinc-850 rounded-[12px]">
+          <div className="flex items-center justify-between bg-zinc-55/5 dark:bg-zinc-950/20 p-4 border border-zinc-200/50 dark:border-zinc-850 rounded-[10px]">
             <div>
-              <h3 className="font-satoshi text-sm font-bold text-zinc-800 dark:text-zinc-200">
+              <h3 className="font-satoshi text-sm font-bold text-text-primary">
                 You are in Edit Mode
               </h3>
-              <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5 font-sans">
+              <p className="text-xs text-text-secondary mt-0.5 font-sans">
                 Modify metrics, activities, and metadata.
               </p>
             </div>
@@ -360,7 +400,7 @@ export const VaultDetail: React.FC = () => {
             <div className="lg:col-span-2 space-y-6">
               
               {/* Project Metadata Card */}
-              <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-6">
+              <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-6">
                 <Input
                   label="Project Name *"
                   placeholder="e.g. Primary School Digital Literacy Initiative"
@@ -409,7 +449,7 @@ export const VaultDetail: React.FC = () => {
               </div>
 
               {/* Narratives Card */}
-              <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-6">
+              <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-6">
                 <Textarea
                   label="Activities Implemented *"
                   placeholder="Describe programmatic inputs, infra bought, workshops held..."
@@ -432,9 +472,9 @@ export const VaultDetail: React.FC = () => {
             <div className="space-y-6">
               
               {/* SDG Alignment Checklist */}
-              <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-5 space-y-4">
-                <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2">
-                  <h3 className="font-satoshi text-xs font-bold uppercase text-zinc-400 dark:text-zinc-550 tracking-wider">
+              <div className="bg-bg-surface border border-border-base rounded-[10px] p-5 space-y-4">
+                <div className="border-b border-border-base pb-2">
+                  <h3 className="font-satoshi text-xs font-bold uppercase text-zinc-400 dark:text-text-secondary tracking-wider">
                     Cause Areas / SDG Alignment *
                   </h3>
                 </div>
@@ -463,8 +503,8 @@ export const VaultDetail: React.FC = () => {
               </div>
 
               {/* Target Demographics Checklist */}
-              <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-5 space-y-4">
-                <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2">
+              <div className="bg-bg-surface border border-border-base rounded-[10px] p-5 space-y-4">
+                <div className="border-b border-border-base pb-2">
                   <h3 className="font-satoshi text-xs font-bold uppercase text-zinc-400 dark:text-zinc-555 tracking-wider">
                     Target Demographics *
                   </h3>
@@ -494,8 +534,8 @@ export const VaultDetail: React.FC = () => {
               </div>
 
               {/* Compliance / UC Card */}
-              <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-5 space-y-4">
-                <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2">
+              <div className="bg-bg-surface border border-border-base rounded-[10px] p-5 space-y-4">
+                <div className="border-b border-border-base pb-2">
                   <h3 className="font-satoshi text-xs font-bold uppercase text-zinc-400 dark:text-zinc-555 tracking-wider">
                     Audit Verification
                   </h3>
@@ -516,13 +556,55 @@ export const VaultDetail: React.FC = () => {
                   />
 
                   {hasUC && (
-                    <div className="pt-1 animate-[fadeIn_0.15s_ease-out]">
-                      <Input
-                        label="Utilization Certificate URL *"
-                        placeholder="https://example-ngo.org/doc/uc.pdf"
-                        error={errors.utilization_certificate_url?.message}
-                        {...register('utilization_certificate_url')}
-                      />
+                    <div className="pt-1 animate-[fadeIn_0.15s_ease-out] space-y-2">
+                      <label className="block text-xs font-sans font-semibold text-zinc-700 dark:text-zinc-350">
+                        Utilization Certificate File *
+                      </label>
+                      <div className="border border-border-base rounded-[8px] p-4 flex items-center justify-between bg-bg-page/50 dark:bg-zinc-950/20">
+                        <div>
+                          {uploadStatus === 'uploaded' ? (
+                            <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-150 block truncate max-w-[150px]">
+                              📎 {fileName || 'utilization_certificate.pdf'}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-zinc-400 dark:text-text-secondary block">
+                              Upload utilization audit PDF (Max 5MB)
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div>
+                          <input
+                            type="file"
+                            id="edit-upload-uc-file"
+                            className="hidden"
+                            accept=".pdf"
+                            onChange={handleUCUpload}
+                          />
+                          {uploading ? (
+                            <span className="text-xs font-semibold text-zinc-500 animate-pulse">Uploading...</span>
+                          ) : uploadStatus === 'uploaded' ? (
+                            <button
+                              type="button"
+                              onClick={() => document.getElementById('edit-upload-uc-file')?.click()}
+                              className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline cursor-pointer"
+                            >
+                              Change File
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => document.getElementById('edit-upload-uc-file')?.click()}
+                              className="text-xs font-semibold text-moss dark:text-moss-dark hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                              Upload UC
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {errors.utilization_certificate_url && (
+                        <span className="text-red-500 text-xs font-sans block">{errors.utilization_certificate_url.message}</span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -538,8 +620,8 @@ export const VaultDetail: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Activities Card */}
-            <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-4">
-              <div className="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 border-b border-zinc-100 dark:border-zinc-800/60 pb-2.5">
+            <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-4">
+              <div className="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-wider text-text-secondary border-b border-border-base pb-2.5">
                 <Milestone size={14} className="text-moss dark:text-moss-dark" />
                 <span>Activities Implemented</span>
               </div>
@@ -549,8 +631,8 @@ export const VaultDetail: React.FC = () => {
             </div>
 
             {/* Outcomes Card */}
-            <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-6 space-y-4">
-              <div className="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 border-b border-zinc-100 dark:border-zinc-800/60 pb-2.5">
+            <div className="bg-bg-surface border border-border-base rounded-[10px] p-6 space-y-4">
+              <div className="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-wider text-text-secondary border-b border-border-base pb-2.5">
                 <BookOpen size={14} className="text-moss dark:text-moss-dark" />
                 <span>Key Outcomes & Impact</span>
               </div>
@@ -564,8 +646,8 @@ export const VaultDetail: React.FC = () => {
           <div className="space-y-6">
             
             {/* Scope & Budget Metrics */}
-            <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-5 space-y-4 font-sans text-xs">
-              <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2.5">
+            <div className="bg-bg-surface border border-border-base rounded-[10px] p-5 space-y-4 font-sans text-xs">
+              <div className="border-b border-border-base pb-2.5">
                 <h3 className="font-satoshi text-xs font-bold uppercase text-zinc-400 dark:text-zinc-555 tracking-wider">
                   Project Scope & Metrics
                 </h3>
@@ -577,7 +659,7 @@ export const VaultDetail: React.FC = () => {
                   <Coins size={14} className="text-zinc-400" />
                   <span>Budget Utilized</span>
                 </div>
-                <span className="font-bold text-zinc-850 dark:text-zinc-200 tabular-nums">
+                <span className="font-bold text-text-primary tabular-nums">
                   {project.budget_used ? currencyFormatter.format(project.budget_used) : 'Not specified'}
                 </span>
               </div>
@@ -588,7 +670,7 @@ export const VaultDetail: React.FC = () => {
                   <Users size={14} className="text-zinc-400" />
                   <span>Beneficiaries Reached</span>
                 </div>
-                <span className="font-bold text-zinc-850 dark:text-zinc-200 tabular-nums">
+                <span className="font-bold text-text-primary tabular-nums">
                   {project.beneficiaries_count !== undefined && project.beneficiaries_count !== null 
                     ? project.beneficiaries_count.toLocaleString() 
                     : 'Not specified'}
@@ -601,15 +683,15 @@ export const VaultDetail: React.FC = () => {
                   <Calendar size={14} className="text-zinc-400" />
                   <span>Project Duration</span>
                 </div>
-                <span className="font-semibold text-zinc-850 dark:text-zinc-200 tabular-nums">
+                <span className="font-semibold text-text-primary tabular-nums">
                   {dateStr || 'Not specified'}
                 </span>
               </div>
             </div>
 
             {/* SDGs & Taxonomy */}
-            <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-5 space-y-4">
-              <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2.5">
+            <div className="bg-bg-surface border border-border-base rounded-[10px] p-5 space-y-4">
+              <div className="border-b border-border-base pb-2.5">
                 <h3 className="font-satoshi text-xs font-bold uppercase text-zinc-400 dark:text-zinc-555 tracking-wider">
                   Alignments & Taxonomies
                 </h3>
@@ -617,7 +699,7 @@ export const VaultDetail: React.FC = () => {
 
               {/* Cause Areas */}
               <div className="space-y-2.5">
-                <span className="text-[9px] uppercase tracking-wider font-bold text-zinc-400 dark:text-zinc-550 block">Cause Areas</span>
+                <span className="text-[9px] uppercase tracking-wider font-bold text-zinc-400 dark:text-text-secondary block">Cause Areas</span>
                 <div className="flex flex-wrap gap-1.5">
                   {project.sdg_alignment && project.sdg_alignment.length > 0 ? (
                     project.sdg_alignment.map((cause) => (
@@ -629,41 +711,41 @@ export const VaultDetail: React.FC = () => {
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs text-zinc-450 italic font-sans">No cause areas logged</span>
+                    <span className="text-xs text-text-secondary italic font-sans">No cause areas logged</span>
                   )}
                 </div>
               </div>
 
               {/* Demographics */}
-              <div className="space-y-2.5 pt-3 border-t border-zinc-100 dark:border-zinc-800/60">
-                <span className="text-[9px] uppercase tracking-wider font-bold text-zinc-400 dark:text-zinc-550 block">Target Demographics</span>
+              <div className="space-y-2.5 pt-3 border-t border-border-base">
+                <span className="text-[9px] uppercase tracking-wider font-bold text-zinc-400 dark:text-text-secondary block">Target Demographics</span>
                 <div className="flex flex-wrap gap-1.5">
                   {project.target_demographics && project.target_demographics.length > 0 ? (
                     project.target_demographics.map((demo) => (
                       <span
                         key={demo}
-                        className="rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-650 dark:text-zinc-350 text-[10px] font-semibold uppercase px-2.5 py-0.5 tracking-wide"
+                        className="rounded-full bg-bg-hover text-zinc-650 dark:text-zinc-350 text-[10px] font-semibold uppercase px-2.5 py-0.5 tracking-wide"
                       >
                         {demo}
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs text-zinc-450 italic font-sans">No demographic details logged</span>
+                    <span className="text-xs text-text-secondary italic font-sans">No demographic details logged</span>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Compliance / UC Panel */}
-            <div className="bg-white dark:bg-zinc-900 border border-[#E8E8E8] dark:border-zinc-800 rounded-[12px] p-5 space-y-4">
-              <div className="border-b border-zinc-100 dark:border-zinc-800 pb-2.5">
+            <div className="bg-bg-surface border border-border-base rounded-[10px] p-5 space-y-4">
+              <div className="border-b border-border-base pb-2.5">
                 <h3 className="font-satoshi text-xs font-bold uppercase text-zinc-400 dark:text-zinc-555 tracking-wider">
                   Verification Records
                 </h3>
               </div>
 
               {project.utilization_certificate_url ? (
-                <div className="bg-zinc-50/50 dark:bg-zinc-950/20 border border-zinc-200/50 dark:border-zinc-800 p-4 rounded-xl flex items-center justify-between">
+                <div className="bg-bg-page/50 dark:bg-zinc-950/20 border border-zinc-200/50 dark:border-zinc-800 p-4 rounded-[10px] flex items-center justify-between">
                   <div className="flex items-center space-x-2.5 text-zinc-800 dark:text-zinc-250 text-xs">
                     <FileCheck size={18} className="text-moss dark:text-moss-dark shrink-0" />
                     <span className="font-semibold font-sans">Utilization Certificate</span>
@@ -672,15 +754,15 @@ export const VaultDetail: React.FC = () => {
                     href={project.utilization_certificate_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1.5 border border-zinc-200 dark:border-zinc-800 rounded-[6px] hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
+                    className="p-1.5 border border-border-base rounded-[6px] hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
                     title="Open Utilization Certificate URL"
                   >
                     <ExternalLink size={14} />
                   </a>
                 </div>
               ) : (
-                <div className="p-4 border border-zinc-200/50 dark:border-zinc-800/80 rounded-xl text-center">
-                  <span className="text-xs font-sans text-zinc-450 italic">No Utilization Certificate uploaded.</span>
+                <div className="p-4 border border-zinc-200/50 dark:border-zinc-800/80 rounded-[10px] text-center">
+                  <span className="text-xs font-sans text-text-secondary italic">No Utilization Certificate uploaded.</span>
                 </div>
               )}
             </div>

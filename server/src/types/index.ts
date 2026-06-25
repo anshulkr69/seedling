@@ -91,7 +91,7 @@ export interface Application {
   id: string;
   org_id: string;
   grant_id: string;
-  status: 'exploring' | 'drafting' | 'submitted' | 'won' | 'rejected';
+  status: 'Exploring' | 'Drafting' | 'Submitted' | 'Won' | 'Rejected';
   draft_content: string | null;
   compliance_checklist: Record<string, unknown> | null;
   submitted_at: string | null;

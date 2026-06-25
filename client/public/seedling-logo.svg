@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#F0F7EC"/>
+  <circle cx="256" cy="256" r="240" stroke="#2D5016" stroke-width="4" stroke-opacity="0.15"/>
+  
+  <!-- Stem -->
+  <path d="M256 420V260" stroke="#2D5016" stroke-width="16" stroke-linecap="round"/>
+  
+  <!-- Left leaf (larger, sweeping) -->
+  <path d="M256 260C256 175 180 110 95 110" stroke="#2D5016" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <path d="M256 280C256 195 185 135 110 130" stroke="#5B9330" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.5"/>
+  
+  <!-- Right leaf (smaller, elegant) -->
+  <path d="M256 310C256 235 330 190 400 190" stroke="#2D5016" stroke-width="16" stroke-linecap="round" fill="none"/>
+  
+  <!-- Right leaf bud/circle -->
+  <path d="M400 190C430 190 455 165 455 135C455 105 430 80 400 80C370 80 345 105 345 135" stroke="#2D5016" stroke-width="16" stroke-linecap="round" fill="none"/>
+  
+  <!-- Soil line -->
+  <path d="M180 420H332" stroke="#2D5016" stroke-width="12" stroke-linecap="round"/>
+</svg>

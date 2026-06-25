@@ -143,14 +143,14 @@ export const GrantPickerModal: React.FC<GrantPickerModalProps> = ({ isOpen, onCl
   return (
     <div className="fixed inset-0 bg-zinc-950/40 dark:bg-zinc-950/60 backdrop-blur-[2px] flex items-center justify-center z-50 p-4 animate-[fadeIn_0.15s_ease-out]">
       <div 
-        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[12px] shadow-[0_10px_30px_rgba(0,0,0,0.08)] w-full max-w-[600px] max-h-[85vh] flex flex-col overflow-hidden transition-colors duration-150"
+        className="bg-bg-surface border border-border-base rounded-[10px] shadow-[0_10px_30px_rgba(0,0,0,0.08)] w-full max-w-[600px] max-h-[85vh] flex flex-col overflow-hidden transition-colors duration-150"
         role="dialog"
         aria-modal="true"
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-border-base/80 flex items-center justify-between">
           <div>
-            <h3 className="font-satoshi text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            <h3 className="font-satoshi text-lg font-semibold text-text-primary">
               Start New Application
             </h3>
             <p className="text-xs font-sans text-zinc-500 dark:text-zinc-400">
@@ -166,15 +166,15 @@ export const GrantPickerModal: React.FC<GrantPickerModalProps> = ({ isOpen, onCl
         </div>
 
         {/* Search */}
-        <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800/50 flex items-center">
+        <div className="p-4 bg-bg-page/50 border-b border-border-base/50 flex items-center">
           <div className="relative w-full">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-text-secondary" />
             <input
               type="text"
               placeholder="Search by funder, cause, or keyword..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-[6px] text-sm font-sans placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline focus:outline-2 focus:outline-moss dark:focus:outline-moss-dark focus:-outline-offset-1 transition-colors"
+              className="w-full pl-9 pr-4 py-2 border border-border-base bg-white dark:bg-zinc-800 text-text-primary rounded-[6px] text-sm font-sans placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline focus:outline-2 focus:outline-moss dark:focus:outline-moss-dark focus:-outline-offset-1 transition-colors"
             />
           </div>
         </div>
@@ -188,8 +188,8 @@ export const GrantPickerModal: React.FC<GrantPickerModalProps> = ({ isOpen, onCl
             </div>
           ) : filteredMatches.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center px-4">
-              <AlertCircle className="w-8 h-8 text-zinc-400 dark:text-zinc-500 mb-2" />
-              <p className="text-sm font-sans font-semibold text-zinc-850 dark:text-zinc-200">No matched grants found</p>
+              <AlertCircle className="w-8 h-8 text-text-secondary mb-2" />
+              <p className="text-sm font-sans font-semibold text-text-primary">No matched grants found</p>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs mt-1">
                 Try updating your organization profile or compliance documentation in Settings to unlock matches.
               </p>
@@ -199,22 +199,22 @@ export const GrantPickerModal: React.FC<GrantPickerModalProps> = ({ isOpen, onCl
               <button
                 key={m.id}
                 onClick={() => handleSelectGrant(m.grant_id)}
-                className="w-full text-left p-3.5 border border-zinc-200 dark:border-zinc-800/80 rounded-[8px] bg-white dark:bg-zinc-900 hover:border-moss dark:hover:border-moss-dark dark:hover:bg-zinc-800/20 transition-all flex items-start justify-between group cursor-pointer"
+                className="w-full text-left p-3.5 border border-border-base/80 rounded-[8px] bg-bg-surface hover:border-moss dark:hover:border-moss-dark dark:hover:bg-zinc-800/20 transition-all flex items-start justify-between group cursor-pointer"
               >
                 <div className="space-y-1 pr-4">
-                  <span className="text-zinc-700 dark:text-zinc-300 font-sans text-[10px] font-bold uppercase tracking-wider">
+                  <span className="text-text-primary font-sans text-[10px] font-bold uppercase tracking-wider">
                     {m.grant.funder}
                   </span>
-                  <h4 className="font-sans text-sm font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-moss dark:group-hover:text-moss-dark transition-colors">
+                  <h4 className="font-sans text-sm font-semibold text-text-primary group-hover:text-moss dark:group-hover:text-moss-dark transition-colors">
                     {m.grant.title}
                   </h4>
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {m.grant.cause_areas.map((cause: string) => (
-                      <span key={cause} className="text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-650 dark:text-zinc-400 px-2 py-0.5 rounded-[4px] font-sans">
+                      <span key={cause} className="text-[10px] bg-bg-hover text-zinc-650 dark:text-zinc-400 px-2 py-0.5 rounded-[4px] font-sans">
                         {cause}
                       </span>
                     ))}
-                    <span className="text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-2 py-0.5 rounded-[4px] font-sans tabular">
+                    <span className="text-[10px] bg-bg-hover text-zinc-600 dark:text-zinc-400 px-2 py-0.5 rounded-[4px] font-sans tabular">
                       ₹{(m.grant.budget_max/100000).toFixed(0)}L Max
                     </span>
                   </div>
@@ -224,7 +224,7 @@ export const GrantPickerModal: React.FC<GrantPickerModalProps> = ({ isOpen, onCl
                   <span className="text-[11px] font-sans font-semibold px-2 py-0.5 rounded-full bg-moss-accent text-moss dark:bg-moss-dark/15 dark:text-moss-dark-hover">
                     {m.fit_score}% Fit
                   </span>
-                  <span className="text-[10px] font-sans text-zinc-400 dark:text-zinc-500 tabular">
+                  <span className="text-[10px] font-sans text-text-secondary tabular">
                     {Math.ceil((new Date(m.grant.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days left
                   </span>
                 </div>
@@ -234,10 +234,10 @@ export const GrantPickerModal: React.FC<GrantPickerModalProps> = ({ isOpen, onCl
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-900/50 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-end">
+        <div className="px-6 py-4 bg-bg-page/50 border-t border-border-base/80 flex items-center justify-end">
           <button
             onClick={onClose}
-            className="text-xs font-sans font-semibold text-zinc-500 dark:text-zinc-450 hover:text-zinc-900 dark:hover:text-zinc-200 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-[6px] transition-colors"
+            className="text-xs font-sans font-semibold text-zinc-500 dark:text-text-secondary hover:text-zinc-900 dark:hover:text-zinc-200 px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-[6px] transition-colors"
           >
             Cancel
           </button>

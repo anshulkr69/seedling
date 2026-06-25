@@ -22,7 +22,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
       {label && (
         <label 
           htmlFor={inputId} 
-          className="text-zinc-700 dark:text-zinc-300 font-sans text-xs font-semibold uppercase tracking-wider"
+          className="text-text-secondary font-sans text-xs font-semibold uppercase tracking-wider"
         >
           {label}
         </label>
@@ -30,14 +30,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
       <input
         ref={ref}
         id={inputId}
-        className={`w-full rounded-[6px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3.5 py-2 text-sm font-sans placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline focus:outline-2 focus:outline-moss dark:focus:outline-moss-dark focus:-outline-offset-1 disabled:opacity-50 transition-colors ${error ? 'border-red-500 focus:outline-red-500' : ''} ${className}`}
+        className={`w-full rounded-[6px] border border-border-base bg-bg-surface text-text-primary px-3.5 py-2 text-sm font-sans placeholder-text-secondary/50 focus:outline focus:outline-2 focus:outline-moss focus:-outline-offset-1 disabled:opacity-50 transition-colors ${error ? 'border-red-500 focus:outline-red-500' : ''} ${className}`}
         {...props}
       />
       {error && (
         <span className="text-red-500 text-xs font-sans mt-0.5">{error}</span>
       )}
       {helperText && !error && (
-        <span className="text-zinc-400 dark:text-zinc-500 text-xs font-sans mt-0.5">{helperText}</span>
+        <span className="text-text-secondary text-xs font-sans mt-0.5">{helperText}</span>
       )}
     </div>
   )
@@ -68,7 +68,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({
       {label && (
         <label 
           htmlFor={textareaId} 
-          className="text-zinc-700 dark:text-zinc-300 font-sans text-xs font-semibold uppercase tracking-wider"
+          className="text-text-secondary font-sans text-xs font-semibold uppercase tracking-wider"
         >
           {label}
         </label>
@@ -76,14 +76,14 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({
       <textarea
         ref={ref}
         id={textareaId}
-        className={`w-full rounded-[6px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3.5 py-2 text-sm font-sans placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline focus:outline-2 focus:outline-moss dark:focus:outline-moss-dark focus:-outline-offset-1 disabled:opacity-50 transition-colors ${error ? 'border-red-500 focus:outline-red-500' : ''} ${className}`}
+        className={`w-full rounded-[6px] border border-border-base bg-bg-surface text-text-primary px-3.5 py-2 text-sm font-sans placeholder-text-secondary/50 focus:outline focus:outline-2 focus:outline-moss focus:-outline-offset-1 disabled:opacity-50 transition-colors ${error ? 'border-red-500 focus:outline-red-500' : ''} ${className}`}
         {...props}
       />
       {error && (
         <span className="text-red-500 text-xs font-sans mt-0.5">{error}</span>
       )}
       {helperText && !error && (
-        <span className="text-zinc-400 dark:text-zinc-500 text-xs font-sans mt-0.5">{helperText}</span>
+        <span className="text-text-secondary text-xs font-sans mt-0.5">{helperText}</span>
       )}
     </div>
   )
@@ -121,7 +121,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
       {label && (
         <label 
           htmlFor={selectId} 
-          className="text-zinc-700 dark:text-zinc-300 font-sans text-xs font-semibold uppercase tracking-wider"
+          className="text-text-secondary font-sans text-xs font-semibold uppercase tracking-wider"
         >
           {label}
         </label>
@@ -129,7 +129,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
       <select
         ref={ref}
         id={selectId}
-        className={`w-full rounded-[6px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3.5 py-2.5 text-sm font-sans focus:outline focus:outline-2 focus:outline-moss dark:focus:outline-moss-dark focus:-outline-offset-1 disabled:opacity-50 transition-colors ${error ? 'border-red-500 focus:outline-red-500' : ''} ${className}`}
+        className={`w-full rounded-[6px] border border-border-base bg-bg-surface text-text-primary px-3.5 py-2.5 text-sm font-sans focus:outline focus:outline-2 focus:outline-moss focus:-outline-offset-1 disabled:opacity-50 transition-colors ${error ? 'border-red-500 focus:outline-red-500' : ''} ${className}`}
         {...props}
       >
         {options.map((opt) => (
@@ -142,7 +142,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
         <span className="text-red-500 text-xs font-sans mt-0.5">{error}</span>
       )}
       {helperText && !error && (
-        <span className="text-zinc-400 dark:text-zinc-500 text-xs font-sans mt-0.5">{helperText}</span>
+        <span className="text-text-secondary text-xs font-sans mt-0.5">{helperText}</span>
       )}
     </div>
   )
@@ -173,12 +173,12 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(({
           ref={ref}
           type="checkbox"
           id={checkboxId}
-          className={`w-4 h-4 rounded border-zinc-300 text-moss focus:ring-moss dark:border-zinc-700 dark:bg-zinc-800 dark:text-moss-dark dark:focus:ring-moss-dark cursor-pointer mt-0.5 ${className}`}
+          className={`w-4 h-4 rounded border-border-base text-moss focus:ring-moss bg-bg-surface cursor-pointer mt-0.5 ${className}`}
           {...props}
         />
         <label 
           htmlFor={checkboxId}
-          className="text-zinc-700 dark:text-zinc-300 font-sans text-sm font-medium select-none cursor-pointer leading-tight"
+          className="text-text-primary font-sans text-sm font-medium select-none cursor-pointer leading-tight"
         >
           {label}
         </label>
@@ -208,22 +208,22 @@ export const Toggle: React.FC<ToggleProps> = ({
   helperText
 }) => {
   return (
-    <div className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800/50">
+    <div className="flex items-center justify-between py-2 border-b border-border-base">
       <div className="flex flex-col space-y-0.5">
-        <span className="text-sm font-sans font-semibold text-zinc-800 dark:text-zinc-200">{label}</span>
-        {helperText && <span className="text-xs font-sans text-zinc-400 dark:text-zinc-500">{helperText}</span>}
+        <span className="text-sm font-sans font-semibold text-text-primary">{label}</span>
+        {helperText && <span className="text-xs font-sans text-text-secondary">{helperText}</span>}
       </div>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-moss focus:ring-offset-2 dark:focus:ring-moss-dark ${
-          checked ? 'bg-moss dark:bg-moss-dark' : 'bg-zinc-200 dark:bg-zinc-700'
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-moss focus:ring-offset-2 ${
+          checked ? 'bg-moss' : 'bg-bg-hover'
         }`}
       >
         <span
-          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-bg-surface shadow-none ring-0 transition duration-200 ease-in-out ${
             checked ? 'translate-x-5' : 'translate-x-0'
           }`}
         />
@@ -258,25 +258,25 @@ export const Stepper: React.FC<StepperProps> = ({
   }
 
   return (
-    <div className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800/50">
-      <span className="text-sm font-sans font-semibold text-zinc-800 dark:text-zinc-200">{label}</span>
-      <div className="flex items-center space-x-1 border border-zinc-200 dark:border-zinc-700 rounded-[6px] p-0.5 bg-zinc-50 dark:bg-zinc-800/50">
+    <div className="flex items-center justify-between py-2 border-b border-border-base">
+      <span className="text-sm font-sans font-semibold text-text-primary">{label}</span>
+      <div className="flex items-center space-x-1 border border-border-base rounded-[6px] p-0.5 bg-bg-page">
         <button
           type="button"
           onClick={handleDecrement}
           disabled={value <= min}
-          className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-750 disabled:opacity-30 rounded-[4px] font-bold transition-colors"
+          className="w-8 h-8 flex items-center justify-center text-text-secondary hover:bg-bg-hover disabled:opacity-30 rounded-[4px] font-bold transition-colors"
         >
           -
         </button>
-        <span className="w-10 text-center font-sans text-sm font-medium text-zinc-900 dark:text-zinc-150 tabular">
+        <span className="w-10 text-center font-sans text-sm font-medium text-text-primary tabular">
           {value}
         </span>
         <button
           type="button"
           onClick={handleIncrement}
           disabled={value >= max}
-          className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-750 disabled:opacity-30 rounded-[4px] font-bold transition-colors"
+          className="w-8 h-8 flex items-center justify-center text-text-secondary hover:bg-bg-hover disabled:opacity-30 rounded-[4px] font-bold transition-colors"
         >
           +
         </button>

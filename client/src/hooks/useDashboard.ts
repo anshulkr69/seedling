@@ -34,21 +34,21 @@ export function useDashboardQuery(): DashboardData {
 
   // 1. Fetch projects count (we only need the total_items metadata from pagination)
   const projectsQuery = useQuery<PaginatedResponse<Project>, Error>({
-    queryKey: ['projects', { limit: 1 }, token],
+    queryKey: ['dashboard', 'projects', { limit: 1 }, token],
     queryFn: () => apiRequest<PaginatedResponse<Project>>('/org/projects?limit=1', { method: 'GET' }, token),
     enabled: !!token,
   });
 
   // 2. Fetch matched grants (limit 100 for score calculation and selection)
   const matchesQuery = useQuery<PaginatedResponse<MatchedGrant>, Error>({
-    queryKey: ['grant_matches', { is_dismissed: false, limit: 100 }, token],
+    queryKey: ['dashboard', 'grant_matches', { is_dismissed: false, limit: 100 }, token],
     queryFn: () => apiRequest<PaginatedResponse<MatchedGrant>>('/grants/matches?is_dismissed=false&limit=100', { method: 'GET' }, token),
     enabled: !!token,
   });
 
   // 3. Fetch applications (limit 100 for active pipeline list)
   const applicationsQuery = useQuery<PaginatedResponse<ApplicationWithGrant>, Error>({
-    queryKey: ['applications', { limit: 100 }, token],
+    queryKey: ['dashboard', 'applications', { limit: 100 }, token],
     queryFn: () => apiRequest<PaginatedResponse<ApplicationWithGrant>>('/applications?limit=100', { method: 'GET' }, token),
     enabled: !!token,
   });

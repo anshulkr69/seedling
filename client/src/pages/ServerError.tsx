@@ -20,7 +20,7 @@ export const ServerError: React.FC = () => {
           <h1 className="font-satoshi text-[40px] font-bold text-zinc-900 dark:text-zinc-50 tracking-tight leading-none">
             Something went wrong.
           </h1>
-          <p className="font-sans text-sm text-zinc-550 dark:text-zinc-400 max-w-xs mx-auto leading-relaxed">
+          <p className="font-sans text-sm text-text-secondary max-w-xs mx-auto leading-relaxed">
             We encountered an unexpected error on our servers. Please try again or head back to the dashboard.
           </p>
         </div>
@@ -34,7 +34,7 @@ export const ServerError: React.FC = () => {
           </button>
           
           <Link to="/dashboard" className="w-full sm:w-auto">
-            <button className="w-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 text-xs font-semibold uppercase tracking-wider rounded-[6px] px-6 py-3 transition-colors duration-150 hover:bg-[#F5F5F5] dark:hover:bg-zinc-850 cursor-pointer">
+            <button className="w-full border border-border-base bg-bg-surface text-text-primary text-xs font-semibold uppercase tracking-wider rounded-[6px] px-6 py-3 transition-colors duration-150 hover:bg-[#F5F5F5] dark:hover:bg-zinc-850 cursor-pointer">
               Back to Dashboard
             </button>
           </Link>

@@ -36,12 +36,18 @@ import projectRoutes from './routes/projects.routes.js';
 import grantsRoutes from './routes/grants.routes.js';
 import applicationsRoutes from './routes/applications.routes.js';
 import engineRoutes from './routes/engine.routes.js';
+import authRoutes from './routes/auth.routes.js';
+import { startCronJobs } from './cron/reminders.cron.js';
 
 app.use('/org', orgRoutes);
 app.use('/org/projects', projectRoutes);
 app.use('/grants', grantsRoutes);
 app.use('/applications', applicationsRoutes);
 app.use('/engine', engineRoutes);
+app.use('/auth', authRoutes);
+
+// ── Start Cron Jobs ──────────────────────────────────────
+startCronJobs();
 
 // ── Start ────────────────────────────────────────────────
 app.listen(env.PORT, () => {

@@ -25,7 +25,7 @@ import { VaultDetail } from './pages/VaultDetail'
 import { ServerError } from './pages/ServerError'
 
 const NotFound: React.FC = () => (
-  <div className="min-h-screen flex items-center justify-center bg-[#F4F4F5] dark:bg-[#18181B] p-4 text-center">
+  <div className="min-h-screen flex items-center justify-center bg-bg-page p-4 text-center">
     <div className="space-y-4">
       <h1 className="font-satoshi text-8xl font-bold text-zinc-300 dark:text-zinc-800">404</h1>
       <p className="text-zinc-650 dark:text-zinc-400 font-sans text-sm font-semibold">This page doesn't exist.</p>

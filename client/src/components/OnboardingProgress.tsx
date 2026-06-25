@@ -24,7 +24,7 @@ const OrganicConnector: React.FC<{ active: boolean }> = ({ active }) => (
       preserveAspectRatio="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`absolute inset-0 w-full h-full stroke-[3] transition-colors duration-300 ${
-        active ? 'text-moss dark:text-moss-dark' : 'text-zinc-200 dark:text-zinc-800'
+        active ? 'text-moss' : 'text-border-base'
       }`}
     >
       <path d="M 0,10 Q 25,3 50,11 T 100,10" strokeLinecap="round" />
@@ -62,10 +62,10 @@ export const OnboardingProgress: React.FC = () => {
                 <div 
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-satoshi font-semibold text-sm transition-all duration-300 border-2 ${
                     isCompleted 
-                      ? 'bg-moss border-moss text-white dark:bg-moss-dark dark:border-moss-dark' 
+                      ? 'bg-moss border-moss text-[var(--btn-text)]' 
                       : isActive 
-                        ? 'border-moss text-moss dark:border-moss-dark dark:text-moss-dark-hover bg-white dark:bg-zinc-900 shadow-[0_0_8px_rgba(74,124,37,0.2)]'
-                        : 'border-zinc-200 dark:border-zinc-800 text-zinc-400 bg-white dark:bg-zinc-900'
+                        ? 'border-moss text-moss bg-bg-surface'
+                        : 'border-border-base text-text-secondary bg-bg-surface'
                   }`}
                 >
                   {isCompleted ? (
@@ -78,10 +78,10 @@ export const OnboardingProgress: React.FC = () => {
                 <span 
                   className={`absolute top-12 whitespace-nowrap text-[11px] font-sans font-semibold uppercase tracking-wider transition-colors duration-300 ${
                     isActive 
-                      ? 'text-moss dark:text-moss-dark' 
+                      ? 'text-moss' 
                       : isCompleted
-                        ? 'text-zinc-700 dark:text-zinc-300'
-                        : 'text-zinc-400 dark:text-zinc-600'
+                        ? 'text-text-primary'
+                        : 'text-text-secondary'
                   }`}
                 >
                   {step.label}
