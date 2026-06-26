@@ -69,10 +69,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, type }
   }
 
   if (type === 'verify') {
-    // If not authenticated -> /login
-    if (!user) {
-      return <Navigate to="/login" replace />
-    }
     // If already verified -> redirect to onboarding or dashboard
     if (isEmailVerified) {
       if (onboardingStep < 5) {
