@@ -30,6 +30,17 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'seedling-api', environment: env.NODE_ENV });
 });
 
+app.get('/debug-env', (_req, res) => {
+  res.json({
+    SUPABASE_URL: env.SUPABASE_URL,
+    CLIENT_URL: env.CLIENT_URL,
+    PORT: env.PORT,
+    NODE_ENV: env.NODE_ENV,
+    SUPABASE_ANON_KEY: env.SUPABASE_ANON_KEY ? `${env.SUPABASE_ANON_KEY.substring(0, 15)}...` : 'undefined',
+    SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY ? `${env.SUPABASE_SERVICE_ROLE_KEY.substring(0, 15)}...` : 'undefined',
+  });
+});
+
 // ── Routes ──────────────────────────────────────────────
 import orgRoutes from './routes/org.routes.js';
 import projectRoutes from './routes/projects.routes.js';
