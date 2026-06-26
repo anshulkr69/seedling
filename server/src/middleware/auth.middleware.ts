@@ -1,5 +1,5 @@
 import type { Response, NextFunction } from 'express';
-import { createUserClient } from '../config/supabase.js';
+import { createUserClient, supabaseAdmin } from '../config/supabase.js';
 import { env } from '../config/env.js';
 import type { AuthenticatedRequest } from '../types/index.js';
 import jwt from 'jsonwebtoken';
@@ -67,9 +67,8 @@ export async function authMiddleware(
       return;
     }
 
-    // Look up the user's organization using the user-scoped client to respect RLS policies
-    const userClient = createUserClient(token);
-    const { data: org, error: orgError } = await userClient
+    // Look up the user's organization using the admin client to avoid dependency on Anon Key RLS during auth resolution
+    const { data: org, error: orgError } = await supabaseAdmin
       .from('organizations')
       .select('id')
       .eq('user_id', user.id)
