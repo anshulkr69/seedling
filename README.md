@@ -80,13 +80,3 @@ feature/your-branch  →  PR  →  develop  →  PR  →  main (submission)
 - `main` is only updated at final submission
 
 ---
-
-## Docs
-
-All project documentation is in `/Docs`:
-- `Seedling_PRD.md` — Product Requirements
-- `Seedling_TRD.md` — Technical Requirements
-- `Seedling_AppFlow.md` — Full App Flow & UI spec
-- `Seedling_BackendSchema.md` — Database schema
-- `Seedling_DesignUI.md` — Design system
-- `Seedling_ImplementationPlan.md` — Phase-by-phase build plan
