@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Trigger Python Engine Scrape
         run: |
-          curl -X POST "${{ secrets.PYTHON_ENGINE_URL }}/scrape/trigger" \
-            -H "X-Internal-Key: ${{ secrets.GITHUB_ACTIONS_WEBHOOK_SECRET }}" \
+          curl -X POST "${{ secrets['PYTHON_ENGINE_URL'] }}/scrape/trigger" \
+            -H "X-Internal-Key: ${{ secrets['GITHUB_ACTIONS_WEBHOOK_SECRET'] }}" \
             -H "Content-Type: application/json" \
             --fail \
             --retry 5 \
