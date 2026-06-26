@@ -5,7 +5,7 @@ import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthLayout, OnboardingLayout, AppLayout } from './components/Layouts'
 import { LandingPage } from './pages/LandingPage'
-import { LoginPage, SignupPage, VerifyEmailPage } from './pages/AuthPages'
+import { LoginPage, SignupPage, VerifyEmailPage, AuthCallbackPage } from './pages/AuthPages'
 import { 
   OnboardingStep1, 
   OnboardingStep2, 
@@ -58,6 +58,9 @@ export default function App() {
         <Routes>
           {/* Public Landing Page */}
           <Route path="/" element={<LandingPage />} />
+
+          {/* Auth Callback Route */}
+          <Route path="auth/callback" element={<AuthCallbackPage />} />
 
           {/* Auth Flow Routes (requires unauthenticated users) */}
           <Route element={<ProtectedRoute type="auth"><AuthLayout /></ProtectedRoute>}>

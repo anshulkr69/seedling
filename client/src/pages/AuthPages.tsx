@@ -15,7 +15,7 @@ import { useAuth } from '../context/AuthContext'
 import { supabase, isMockMode } from '../supabase'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
-import { Sprout, Mail, AlertCircle, Info, Lock } from 'lucide-react'
+import { Sprout, Mail, AlertCircle, Info, Lock, CheckCircle2, Loader2 } from 'lucide-react'
 
 // Login Page
 export const LoginPage: React.FC = () => {
@@ -300,6 +300,7 @@ export const SignupPage: React.FC = () => {
       if (err) {
         setError(err.message || 'Error creating account')
       } else {
+        localStorage.setItem('seedling_signup_email', data.email)
         navigate('/verify-email')
       }
     } catch (e) {
@@ -402,7 +403,10 @@ export const VerifyEmailPage: React.FC = () => {
   useEffect(() => {
     // Get the email of the pending user
     const pendingStr = localStorage.getItem('seedling_mock_pending_verify_user')
-    if (pendingStr) {
+    const signupEmail = localStorage.getItem('seedling_signup_email')
+    if (signupEmail) {
+      setEmailText(signupEmail)
+    } else if (pendingStr) {
       setEmailText(JSON.parse(pendingStr).email)
     } else if (user) {
       setEmailText(user.email)
@@ -486,6 +490,203 @@ export const VerifyEmailPage: React.FC = () => {
         <Link to="/login" className="font-semibold text-moss dark:text-moss-dark hover:underline">
           Go to Sign In
         </Link>
+      </div>
+    </div>
+  )
+}
+
+
+// Auth Callback Page (Handles email verification redirects)
+export const AuthCallbackPage: React.FC = () => {
+  const navigate = useNavigate()
+  const { refreshProfile, profile } = useAuth()
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [countdown, setCountdown] = useState(3)
+
+  useEffect(() => {
+    let active = true
+
+    const verifySession = async () => {
+      try {
+        // Wait a small buffer to let Supabase SDK capture URL parameters/hash and sync
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        const { data: { session }, error } = await supabase.auth.getSession()
+
+        if (error) {
+          throw error
+        }
+
+        if (session) {
+          if (!active) return
+          setStatus('success')
+          // Refresh the user profile to fetch organization status
+          await refreshProfile()
+        } else {
+          // No session found yet, check on a retry loop
+          let retries = 3
+          while (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            const { data: { session: retrySession } } = await supabase.auth.getSession()
+            if (retrySession) {
+              if (!active) return
+              setStatus('success')
+              await refreshProfile()
+              return
+            }
+            retries--
+          }
+          throw new Error('No active session found. The link may have expired or is invalid.')
+        }
+      } catch (err: any) {
+        if (!active) return
+        setStatus('error')
+        setErrorMessage(err.message || 'Failed to verify email.')
+      }
+    }
+
+    verifySession()
+
+    return () => {
+      active = false
+    }
+  }, [refreshProfile])
+
+  // Countdown timer on success
+  useEffect(() => {
+    if (status !== 'success') return
+    if (countdown <= 0) {
+      // Determine where to redirect
+      const onboardingStep = profile?.onboarding_step ?? 1
+      if (onboardingStep < 5) {
+        navigate('/onboarding/identity')
+      } else {
+        navigate('/dashboard')
+      }
+      return
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(prev => prev - 1)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [status, countdown, navigate, profile])
+
+  const handleManualProceed = () => {
+    const onboardingStep = profile?.onboarding_step ?? 1
+    if (onboardingStep < 5) {
+      navigate('/onboarding/identity')
+    } else {
+      navigate('/dashboard')
+    }
+  }
+
+  const handleCloseTab = () => {
+    window.close()
+    // Fallback if window.close() is blocked by browser security
+    alert("You can now close this tab safely.")
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-150">
+      <div className="max-w-[440px] w-full bg-bg-surface border border-border-base rounded-[12px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)] space-y-6 text-center animate-[fadeIn_0.2s_ease-out]">
+        
+        <div className="flex justify-center">
+          <div className="flex items-center space-x-2">
+            <Sprout className="w-6 h-6 text-moss dark:text-moss-dark animate-[bounce_2s_infinite]" />
+            <span className="font-satoshi text-lg font-bold text-text-primary tracking-tight">Seedling</span>
+          </div>
+        </div>
+
+        {status === 'loading' && (
+          <div className="space-y-4 py-4">
+            <div className="flex justify-center">
+              <Loader2 className="w-10 h-10 text-moss dark:text-moss-dark animate-spin" />
+            </div>
+            <h3 className="font-satoshi text-xl font-bold text-text-primary tracking-tight">
+              Verifying your email
+            </h3>
+            <p className="text-zinc-500 dark:text-zinc-400 text-xs font-sans">
+              Please wait while we establish a secure session with Seedling...
+            </p>
+          </div>
+        )}
+
+        {status === 'success' && (
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex justify-center">
+                <CheckCircle2 className="w-12 h-12 text-emerald-500 animate-[pulse_1.5s_infinite]" />
+              </div>
+              <h3 className="font-satoshi text-xl font-bold text-text-primary tracking-tight">
+                Email Verified!
+              </h3>
+              <p className="text-zinc-500 dark:text-zinc-400 text-xs font-sans leading-relaxed">
+                Your account is now active. Redirecting you to onboarding in{' '}
+                <strong className="text-moss dark:text-moss-dark font-bold">{countdown}s</strong>...
+              </p>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <Button 
+                onClick={handleManualProceed}
+                className="w-full py-3 text-xs font-semibold uppercase tracking-wider"
+              >
+                Proceed to Onboarding
+              </Button>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  variant="secondary"
+                  onClick={() => navigate('/login')}
+                  className="py-2.5 text-xs font-semibold w-full"
+                >
+                  Go to Login
+                </Button>
+                <Button 
+                  variant="secondary"
+                  onClick={handleCloseTab}
+                  className="py-2.5 text-xs font-semibold w-full hover:border-red-500/30 hover:text-red-500"
+                >
+                  Close Tab
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {status === 'error' && (
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex justify-center">
+                <AlertCircle className="w-12 h-12 text-red-500" />
+              </div>
+              <h3 className="font-satoshi text-xl font-bold text-text-primary tracking-tight">
+                Verification Failed
+              </h3>
+              <p className="text-red-650 dark:text-red-400 text-xs font-sans leading-relaxed bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/30 p-3 rounded-[6px]">
+                {errorMessage || 'The verification link is invalid or has expired.'}
+              </p>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <Button 
+                onClick={() => navigate('/login')}
+                className="w-full py-3 text-xs font-semibold uppercase tracking-wider"
+              >
+                Return to Login
+              </Button>
+              <button
+                onClick={handleCloseTab}
+                className="text-xs font-sans font-semibold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 block mx-auto hover:underline"
+              >
+                Close Tab
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

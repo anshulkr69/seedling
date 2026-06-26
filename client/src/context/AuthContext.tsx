@@ -86,7 +86,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email,
       password,
       options: {
-        data: { name }
+        data: { name },
+        emailRedirectTo: `${window.location.origin}/auth/callback`
       }
     })
     setLoading(false)
