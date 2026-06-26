@@ -34,9 +34,9 @@ app.get('/debug-env', (_req, res) => {
   const getRole = (key: string | undefined) => {
     if (!key) return 'undefined';
     const parts = key.split('.');
-    if (parts.length < 2) return 'invalid-jwt';
+    if (parts.length < 2 || !parts[1]) return 'invalid-jwt';
     try {
-      const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
+      const payload = JSON.parse(Buffer.from(parts[1] as string, 'base64').toString('utf8'));
       return payload.role || 'no-role-field';
     } catch (e: any) {
       return `error: ${e.message}`;
